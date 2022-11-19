@@ -1,0 +1,18 @@
+# Request message types
+float32[] obj_posx
+float32[] obj_posy
+float32[] obj_posz
+float32[] obj_orientx
+float32[] obj_orienty
+float32[] obj_orientz
+float32[] obj_orientw
+float32[] sizex
+float32[] sizey
+float32[] sizez
+string[] name_obj
+
+geometry_msgs/PoseStamped goal
+
+---
+# Response message types
+geometry_msgs/Twist cmd
