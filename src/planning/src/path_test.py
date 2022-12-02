@@ -71,7 +71,7 @@ def main(obj_arr = [], end_goal = None):
 
 
 
-
+    print("Got to pose move loop in path_test")
 
     while not rospy.is_shutdown():
 

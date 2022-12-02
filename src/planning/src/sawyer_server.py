@@ -8,6 +8,7 @@ from planning.srv import enviro  # Service type
 # from turtlesim.srv import TeleportAbsolute
 from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
+from path_planner import PathPlanner
 
 name = ""
 def sawyer_callback(request):
@@ -26,7 +27,6 @@ def sawyer_callback(request):
 
     # Clear historical path traces
     rospy.loginfo("Got message request")
-    end_goal = request.goal
     list_obj = []
     for i in range(len(request.name_obj)):
 
@@ -41,13 +41,56 @@ def sawyer_callback(request):
         pos.pose.orientation.y = request.obj_orienty[i]
         pos.pose.orientation.z = request.obj_orientz[i]
         pos.pose.orientation.w = request.obj_orientw[i]
+        pos = request.goal[i]
+        # plan = planner.plan_to_pose(pos, [])
 
         list_obj.append((size, name, pos))
-    main(list_obj, end_goal)
+    main(list_obj, pos)
+
     clear_proxy()
     while not rospy.is_shutdown():
         pub.publish(cmd)  # Publish to cmd_vel
         rate.sleep()  # Sleep until 
+    
+    #New implementation with path_test call loop
+    # while not rospy.is_shutdown():
+
+    #     while not rospy.is_shutdown():
+    #         pub.publish(cmd)  # Publish to cmd_vel
+    #         rate.sleep()  # Sleep until 
+    #         try:
+    #             x, y, z = 0.8, 0.05, 0.07
+    #             goal_1 = PoseStamped()
+    #             goal_1.header.frame_id = "base"
+
+    #             #x, y, and z position
+    #             goal_1.pose.position.x = x
+    #             goal_1.pose.position.y = y
+    #             goal_1.pose.position.z = z
+
+    #             #Orientation as a quaternion
+    #             goal_1.pose.orientation.x = 0.0
+    #             goal_1.pose.orientation.y = -1.0
+    #             goal_1.pose.orientation.z = 0.0
+    #             goal_1.pose.orientation.w = 0.0
+
+    #             goal_1 = end_goal
+
+    #             # Might have to edit this . . . 
+    #             # plan = planner.plan_to_pose(goal_1, [orien_const])
+    #             plan = planner.plan_to_pose(goal_1, [])
+    #             # input("Press <Enter> to move the right arm to goal pose 1: ")
+    #             # print("OG PLAN", plan, '\n\n\n')
+    #             # print(plan[1])
+    #             # if not planner.execute_plan(plan[1]): 
+    #             if not controller.execute_plan(plan[1]):
+    #                 raise Exception("Execution failed")
+    #         except Exception as e:
+    #             print(e)
+    #             traceback.print_exc()
+    #         else:
+    #             break
+
     return cmd  # This line will never be reached
 
 def sawyer_server():
