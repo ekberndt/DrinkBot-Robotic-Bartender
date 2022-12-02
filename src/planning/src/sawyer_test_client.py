@@ -7,7 +7,7 @@ from planning.srv import enviro  # Service type
 from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
 
-def patrol_client():
+def sawyer_client():
     # Initialize the client node
     rospy.init_node('sawyer_client')
     # Wait until patrol service is ready
@@ -21,8 +21,6 @@ def patrol_client():
         # omega = 1.0  # Angular velocity
 
         #Test Case 1
-
-
         obj_posx = np.array([2])
         obj_posy = np.array([2])
         obj_posz = np.array([2])
@@ -50,11 +48,12 @@ def patrol_client():
 
         rospy.loginfo('Moving Arm')
         # Call patrol service via the proxy
+        input("press enter to move")
         sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, goal)
     except rospy.ServiceException as e:
-        rospy.loginfo(e)
+        rospy.loginfo("Service call failed: %s"%e)
 
 
 if __name__ == '__main__':
-    patrol_client()
+    sawyer_client()
 

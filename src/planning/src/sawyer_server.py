@@ -12,9 +12,9 @@ from path_planner import PathPlanner
 
 name = ""
 def sawyer_callback(request):
-    rospy.wait_for_service('clear')
+    ## rospy.wait_for_service('clear')
     # rospy.wait_for_service("/{}/teleport_absolute".format(name))
-    clear_proxy = rospy.ServiceProxy('clear', Empty)
+    ## clear_proxy = rospy.ServiceProxy('clear', Empty)
     # teleport_proxy = rospy.ServiceProxy(
     #     "/{}/teleport_absolute".format(name),
     #     TeleportAbsolute
@@ -28,6 +28,8 @@ def sawyer_callback(request):
     # Clear historical path traces
     rospy.loginfo("Got message request")
     list_obj = []
+    end_goal = request.goal
+
     for i in range(len(request.name_obj)):
 
         size = np.array([request.sizex[i], request.sizey[i], request.sizez[i]])
@@ -41,11 +43,10 @@ def sawyer_callback(request):
         pos.pose.orientation.y = request.obj_orienty[i]
         pos.pose.orientation.z = request.obj_orientz[i]
         pos.pose.orientation.w = request.obj_orientw[i]
-        pos = request.goal[i]
         # plan = planner.plan_to_pose(pos, [])
 
         list_obj.append((size, name, pos))
-    main(list_obj, pos)
+    main(list_obj, end_goal)
 
     clear_proxy()
     while not rospy.is_shutdown():
@@ -97,7 +98,7 @@ def sawyer_server():
     # Initialize the server node for turtle1
     rospy.init_node("sawyer_server")
     # Register service
-    rospy.Service(
+    s = rospy.Service(
         "/sawyer_parms/enviro",  # Service name
         enviro,  # Service type
         sawyer_callback  # Service callback

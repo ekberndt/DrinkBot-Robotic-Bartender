@@ -15,4 +15,4 @@ geometry_msgs/PoseStamped goal
 
 ---
 # Response message types
-geometry_msgs/Twist cmd
+string response

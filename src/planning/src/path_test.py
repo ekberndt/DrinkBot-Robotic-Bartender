@@ -55,8 +55,8 @@ def main(obj_arr = [], end_goal = None):
     # pos.pose.orientation.z = 0
     # pos.pose.orientation.w = 1
     # planner.add_box_obstacle(size, name, pos)
-    for obstacle in obj_arr:
-        planner.add_box_obstacle(obstacle[0], obstacle[1], obstacle[2])
+    # for obstacle in obj_arr:
+    #     planner.add_box_obstacle(obstacle[0], obstacle[1], obstacle[2])
 
     #Create a path constraint for the arm
     #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
