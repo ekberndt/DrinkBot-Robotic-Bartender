@@ -34,9 +34,9 @@ def sawyer_client():
         name_obj = np.array(["Brick"])
 
         goal = PoseStamped()
-        goal.pose.position.x = 0
-        goal.pose.position.y = 0
-        goal.pose.position.z = 0
+        goal.pose.position.x = 0.502
+        goal.pose.position.y = -0.394
+        goal.pose.position.z = -0.133
 
         #Orientation as a quaternion
         goal.pose.orientation.x = 0.0

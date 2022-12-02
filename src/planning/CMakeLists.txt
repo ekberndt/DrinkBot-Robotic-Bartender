@@ -57,6 +57,7 @@ find_package(catkin REQUIRED
 ## Generate services in the 'srv' folder
 add_service_files(FILES
     enviro.srv
+    grip.srv
 )
 
 ## Generate actions in the 'action' folder
