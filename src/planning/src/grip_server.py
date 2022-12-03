@@ -38,6 +38,7 @@ from intera_interface import gripper as robot_gripper
 name = ""
 def grip_callback(request):
     rospy.loginfo("Got message request")
+    # clear_proxy = rospy.ServiceProxy('clear', Empty)
     # list_obj = []
     # end_goal = request.goal
 
@@ -61,15 +62,17 @@ def grip_callback(request):
     # Set up the right gripper
     right_gripper = robot_gripper.Gripper('right_gripper')
 
-    if (request.grip):
-    	print('Calibrating...')
-    	right_gripper.calibrate()
-    	rospy.sleep(2.0)
+    print('Calibrating...')
+    right_gripper.calibrate()
+    rospy.sleep(2.0)
 
+    if (request.grip):
     	# Close the right gripper
-    	print('Closing...')
-    	right_gripper.close()
-    	rospy.sleep(1.0)
+        print('Closing...')
+        right_gripper.close()
+        print('I should have closed')
+        rospy.sleep(1.0)
+        print('I made to after sleep')
     else:
     	# Open the right gripper
     	print('Opening...')

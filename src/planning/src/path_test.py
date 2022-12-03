@@ -77,25 +77,28 @@ def main(obj_arr = [], end_goal = None):
 
         while not rospy.is_shutdown():
             try:
-                x, y, z = 0.8, 0.05, 0.07
-                goal_1 = PoseStamped()
-                goal_1.header.frame_id = "base"
+                # x, y, z = 0.8, 0.05, 0.07
+                # goal_1 = PoseStamped()
+                # goal_1.header.frame_id = "base"
 
-                #x, y, and z position
-                goal_1.pose.position.x = x
-                goal_1.pose.position.y = y
-                goal_1.pose.position.z = z
+                # #x, y, and z position
+                # goal_1.pose.position.x = x
+                # goal_1.pose.position.y = y
+                # goal_1.pose.position.z = z
 
-                #Orientation as a quaternion
-                goal_1.pose.orientation.x = 0.0
-                goal_1.pose.orientation.y = -1.0
-                goal_1.pose.orientation.z = 0.0
-                goal_1.pose.orientation.w = 0.0
+                # #Orientation as a quaternion
+                # goal_1.pose.orientation.x = 0.0
+                # goal_1.pose.orientation.y = -1.0
+                # goal_1.pose.orientation.z = 0.0
+                # goal_1.pose.orientation.w = 0.0
 
                 goal_1 = end_goal
 
                 # Might have to edit this . . . 
                 # plan = planner.plan_to_pose(goal_1, [orien_const])
+                print('moving to x: ' + str(goal_1.pose.position.x))
+                print('moving to x: ' + str(goal_1.pose.position.y))
+                print('moving to x: ' + str(goal_1.pose.position.z))
                 plan = planner.plan_to_pose(goal_1, [])
                 # input("Press <Enter> to move the right arm to goal pose 1: ")
                 # print("OG PLAN", plan, '\n\n\n')
