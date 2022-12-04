@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::planning::enviro > {
   static const char* value()
   {
-    return "7db6d4836f25ca96fe8ff3e313a5f71c";
+    return "7057eb40c64cbf8bdf2c3deb4aec57bb";
   }
 
   static const char* value(const ::planning::enviro&) { return value(); }

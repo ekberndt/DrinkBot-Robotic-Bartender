@@ -36,6 +36,7 @@ struct enviroRequest_
     , sizey()
     , sizez()
     , name_obj()
+    , orient(false)
     , goal()  {
     }
   enviroRequest_(const ContainerAllocator& _alloc)
@@ -50,6 +51,7 @@ struct enviroRequest_
     , sizey(_alloc)
     , sizez(_alloc)
     , name_obj(_alloc)
+    , orient(false)
     , goal(_alloc)  {
   (void)_alloc;
     }
@@ -88,6 +90,9 @@ struct enviroRequest_
 
    typedef std::vector<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > , typename ContainerAllocator::template rebind<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::other >  _name_obj_type;
   _name_obj_type name_obj;
+
+   typedef uint8_t _orient_type;
+  _orient_type orient;
 
    typedef  ::geometry_msgs::PoseStamped_<ContainerAllocator>  _goal_type;
   _goal_type goal;
@@ -132,6 +137,7 @@ bool operator==(const ::planning::enviroRequest_<ContainerAllocator1> & lhs, con
     lhs.sizey == rhs.sizey &&
     lhs.sizez == rhs.sizez &&
     lhs.name_obj == rhs.name_obj &&
+    lhs.orient == rhs.orient &&
     lhs.goal == rhs.goal;
 }
 
@@ -189,12 +195,12 @@ struct MD5Sum< ::planning::enviroRequest_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "f753f1d4d2bf2e618dfa1eac6125eedf";
+    return "ac173308e516f10a02ef5fa5af4d1860";
   }
 
   static const char* value(const ::planning::enviroRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xf753f1d4d2bf2e61ULL;
-  static const uint64_t static_value2 = 0x8dfa1eac6125eedfULL;
+  static const uint64_t static_value1 = 0xac173308e516f10aULL;
+  static const uint64_t static_value2 = 0x02ef5fa5af4d1860ULL;
 };
 
 template<class ContainerAllocator>
@@ -225,6 +231,7 @@ struct Definition< ::planning::enviroRequest_<ContainerAllocator> >
 "float32[] sizey\n"
 "float32[] sizez\n"
 "string[] name_obj\n"
+"bool orient\n"
 "\n"
 "geometry_msgs/PoseStamped goal\n"
 "\n"
@@ -301,6 +308,7 @@ namespace serialization
       stream.next(m.sizey);
       stream.next(m.sizez);
       stream.next(m.name_obj);
+      stream.next(m.orient);
       stream.next(m.goal);
     }
 
@@ -386,6 +394,8 @@ struct Printer< ::planning::enviroRequest_<ContainerAllocator> >
       s << indent << "  name_obj[" << i << "]: ";
       Printer<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::stream(s, indent + "  ", v.name_obj[i]);
     }
+    s << indent << "orient: ";
+    Printer<uint8_t>::stream(s, indent + "  ", v.orient);
     s << indent << "goal: ";
     s << std::endl;
     Printer< ::geometry_msgs::PoseStamped_<ContainerAllocator> >::stream(s, indent + "  ", v.goal);

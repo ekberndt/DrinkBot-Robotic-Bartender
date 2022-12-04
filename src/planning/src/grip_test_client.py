@@ -7,15 +7,15 @@ from planning.srv import grip  # Service type
 from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
 
-def sawyer_client():
+def grip_client():
     # Initialize the client node
-    rospy.init_node('sawyer_client')
+    rospy.init_node('grip_client')
     # Wait until patrol service is ready
     # rospy.wait_for_service('/turtle1/patrol')
     rospy.wait_for_service('/sawyer_parms/grip')
     try:
         # Acquire service proxy
-        sawyer_proxy = rospy.ServiceProxy(
+        grip_proxy = rospy.ServiceProxy(
             '/sawyer_parms/grip', grip)
         # vel = 2.0  # Linear velocity
         # omega = 1.0  # Angular velocity
@@ -50,13 +50,14 @@ def sawyer_client():
 
         rospy.loginfo('Closing Gripper')
         # Call patrol service via the proxy
-        input("press enter to grip")
-        msg = not msg
-        sawyer_proxy(msg)
+        while not rospy.is_shutdown():
+            input("press enter to grip")
+            msg = not msg
+            grip_proxy(msg)
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s"%e)
 
 
 if __name__ == '__main__':
-    sawyer_client()
+    grip_client()
 

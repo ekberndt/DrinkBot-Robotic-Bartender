@@ -1,2 +1,2 @@
 # Request message types
-float32[] mass
+float32 mass

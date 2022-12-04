@@ -67,6 +67,10 @@ class PathPlanner(object):
         # Sleep for a bit to ensure that all inititialization has finished
         rospy.sleep(0.5)
 
+    def get_current_poses(self):
+        print("Current Robot State: ", self._robot.get_current_state())
+        return self._group.get_current_pose().pose
+
     def shutdown(self):
         """
         Code to run on shutdown. This is good practice for safety
