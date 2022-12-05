@@ -63,10 +63,7 @@ class scale_msg {
   static messageDefinition() {
     // Returns full string definition for message
     return `
-<<<<<<< HEAD
-=======
     # Request message types
->>>>>>> refs/remotes/origin/main
     float32 mass
     `;
   }

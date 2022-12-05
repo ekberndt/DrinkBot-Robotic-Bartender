@@ -49,13 +49,8 @@ find_package(catkin REQUIRED
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-<<<<<<< HEAD
     FILES
     scale_msg.msg
-=======
-  FILES
-  scale_msg.msg
->>>>>>> refs/remotes/origin/main
 )
 
 ## Generate services in the 'srv' folder
