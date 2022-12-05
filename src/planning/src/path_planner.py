@@ -62,12 +62,22 @@ class PathPlanner(object):
         self._group.set_planning_time(5)
 
         # Set the bounds of the workspace
+        # self._group.set_workspace([-2, -2, -2, 2, 2, 2])
         self._group.set_workspace([-2, -2, -2, 2, 2, 2])
 
         # Sleep for a bit to ensure that all inititialization has finished
         rospy.sleep(0.5)
 
+    def get_group(self):
+        """
+        Returns MoveIt Group.
+        """
+        return self._group
+
     def get_current_poses(self):
+        """
+        Code to get current pose.
+        """
         print("Current Robot State: ", self._robot.get_current_state())
         return self._group.get_current_pose().pose
 
@@ -80,7 +90,7 @@ class PathPlanner(object):
         self._group = None
         rospy.loginfo("Stopping Path Planner")
 
-    def plan_to_pose(self, target, orientation_constraints):
+    def plan_to_pose(self, target, orientation_constraints = [], position_constraints = []):
         """
         Generates a plan given an end effector pose subject to orientation constraints
 
@@ -97,18 +107,17 @@ class PathPlanner(object):
 
         constraints = Constraints()
         constraints.orientation_constraints = orientation_constraints
+        constraints.position_constraints = position_constraints
         self._group.set_path_constraints(constraints)
-
-        plan = self._group.plan()
-
+        plan = self._group.plan()                                                                   
         return plan
 
     def execute_plan(self, plan):
         """
         Uses the robot's built-in controllers to execute a plan
 
-        Inputs:
-        plan: a moveit_msgs/RobotTrajectory plan
+        Inputs:                        
+        plan: a moveit_msgs/RobotTrajectory plan     
         """
 
         return self._group.execute(plan, True)

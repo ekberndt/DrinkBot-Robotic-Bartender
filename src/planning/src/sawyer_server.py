@@ -7,7 +7,7 @@ import sys
 from planning.srv import enviro  # Service type
 # from turtlesim.srv import TeleportAbsolute
 from path_test import main #Link to Arm Movement
-from moveit_msgs.msg import OrientationConstraint
+from moveit_msgs.msg import OrientationConstraint, PositionConstraint
 from geometry_msgs.msg import PoseStamped
 from path_planner import PathPlanner
 
@@ -51,7 +51,7 @@ def sawyer_callback(request):
     #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
     #TODO: add conditional taken from srv msg
     orien_const = OrientationConstraint()
-    orien_const.link_name = "right_gripper";
+    orien_const.link_name = "right_gripper_tip";
     orien_const.header.frame_id = "base";
     # orien_const.orientation
     # orien_const.orientation.x = 0.0
@@ -61,8 +61,19 @@ def sawyer_callback(request):
 
     orien_const.absolute_x_axis_tolerance = 0.2;
     orien_const.absolute_y_axis_tolerance = 0.2;
-    orien_const.absolute_z_axis_tolerance = 0.2;
+    orien_const.absolute_z_axis_tolerance = 3.14;
     orien_const.weight = 1.0;
+
+    # pos_const = PositionConstraint()
+    # pos_const.link_name = "right_gripper_tip";
+    # pos_const.header.frame_id = "base";
+    # pos_const.target_point_offset.x = 0.6;
+    # pos_const.target_point_offset.y = -0.3;
+    # pos_const.target_point_offset.z = 0.0;
+    # pos_const.weight = 1.0;
+
+    #POSITION CONSTRAINT TO PICK UP CUP
+    # pos_const = PositionConstraint()
 
 
     #If down orientation is needed, constrain it
@@ -71,49 +82,6 @@ def sawyer_callback(request):
     else:
         main(list_obj, end_goal, None)
 
-    # clear_proxy()
-    # while not rospy.is_shutdown():
-    #     pub.publish(cmd)  # Publish to cmd_vel
-    #     rate.sleep()  # Sleep until 
-    
-    #New implementation with path_test call loop
-    # while not rospy.is_shutdown():
-
-    #     while not rospy.is_shutdown():
-    #         pub.publish(cmd)  # Publish to cmd_vel
-    #         rate.sleep()  # Sleep until 
-    #         try:
-    #             x, y, z = 0.8, 0.05, 0.07
-    #             goal_1 = PoseStamped()
-    #             goal_1.header.frame6                                              _id = "base"
-
-    #             #x, y, and z position
-    #             goal_1.pose.position.x = x
-    #             goal_1.pose.position.y = y
-    #             goal_1.pose.position.z = z
-
-    #             #Orientation as a quaternion
-    #             goal_1.pose.orientation.x = 0.0
-    #             goal_1.pose.orientation.y = -1.0
-    #             goal_1.pose.orientation.z = 0.0
-    #             goal_1.pose.orientation.w = 0.0
-
-    #             goal_1 = end_goal
-
-    #             # Might have to edit this . . . 
-    #             # plan = planner.plan_to_pose(goal_1, [orien_const])
-    #             plan = planner.plan_to_pose(goal_1, [])
-    #             # input("Press <Enter> to move the right arm to goal pose 1: ")
-    #             # print("OG PLAN", plan, '\n\n\n')
-    #             # print(plan[1])
-    #             # if not planner.execute_plan(plan[1]): 
-    #             if not controller.execute_plan(plan[1]):
-    #                 raise Exception("Execution failed")
-    #         except Exception as e:
-    #             print(e)
-    #             traceback.print_exc()
-    #         else:
-    #             break
 
     return "Finished executing pose"  # This line will never be reached
 
