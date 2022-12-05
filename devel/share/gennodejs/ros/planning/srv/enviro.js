@@ -33,6 +33,7 @@ class enviroRequest {
       this.sizey = null;
       this.sizez = null;
       this.name_obj = null;
+      this.orient = null;
       this.goal = null;
     }
     else {
@@ -102,6 +103,12 @@ class enviroRequest {
       else {
         this.name_obj = [];
       }
+      if (initObj.hasOwnProperty('orient')) {
+        this.orient = initObj.orient
+      }
+      else {
+        this.orient = false;
+      }
       if (initObj.hasOwnProperty('goal')) {
         this.goal = initObj.goal
       }
@@ -135,6 +142,8 @@ class enviroRequest {
     bufferOffset = _arraySerializer.float32(obj.sizez, buffer, bufferOffset, null);
     // Serialize message field [name_obj]
     bufferOffset = _arraySerializer.string(obj.name_obj, buffer, bufferOffset, null);
+    // Serialize message field [orient]
+    bufferOffset = _serializer.bool(obj.orient, buffer, bufferOffset);
     // Serialize message field [goal]
     bufferOffset = geometry_msgs.msg.PoseStamped.serialize(obj.goal, buffer, bufferOffset);
     return bufferOffset;
@@ -166,6 +175,8 @@ class enviroRequest {
     data.sizez = _arrayDeserializer.float32(buffer, bufferOffset, null)
     // Deserialize message field [name_obj]
     data.name_obj = _arrayDeserializer.string(buffer, bufferOffset, null)
+    // Deserialize message field [orient]
+    data.orient = _deserializer.bool(buffer, bufferOffset);
     // Deserialize message field [goal]
     data.goal = geometry_msgs.msg.PoseStamped.deserialize(buffer, bufferOffset);
     return data;
@@ -187,7 +198,7 @@ class enviroRequest {
       length += 4 + _getByteLength(val);
     });
     length += geometry_msgs.msg.PoseStamped.getMessageSize(object.goal);
-    return length + 44;
+    return length + 45;
   }
 
   static datatype() {
@@ -197,7 +208,7 @@ class enviroRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'f753f1d4d2bf2e618dfa1eac6125eedf';
+    return 'ac173308e516f10a02ef5fa5af4d1860';
   }
 
   static messageDefinition() {
@@ -215,6 +226,7 @@ class enviroRequest {
     float32[] sizey
     float32[] sizez
     string[] name_obj
+    bool orient
     
     geometry_msgs/PoseStamped goal
     
@@ -349,6 +361,13 @@ class enviroRequest {
       resolved.name_obj = []
     }
 
+    if (msg.orient !== undefined) {
+      resolved.orient = msg.orient;
+    }
+    else {
+      resolved.orient = false
+    }
+
     if (msg.goal !== undefined) {
       resolved.goal = geometry_msgs.msg.PoseStamped.Resolve(msg.goal)
     }
@@ -364,22 +383,22 @@ class enviroResponse {
   constructor(initObj={}) {
     if (initObj === null) {
       // initObj === null is a special case for deserialization where we don't initialize fields
-      this.cmd = null;
+      this.response = null;
     }
     else {
-      if (initObj.hasOwnProperty('cmd')) {
-        this.cmd = initObj.cmd
+      if (initObj.hasOwnProperty('response')) {
+        this.response = initObj.response
       }
       else {
-        this.cmd = new geometry_msgs.msg.Twist();
+        this.response = '';
       }
     }
   }
 
   static serialize(obj, buffer, bufferOffset) {
     // Serializes a message object of type enviroResponse
-    // Serialize message field [cmd]
-    bufferOffset = geometry_msgs.msg.Twist.serialize(obj.cmd, buffer, bufferOffset);
+    // Serialize message field [response]
+    bufferOffset = _serializer.string(obj.response, buffer, bufferOffset);
     return bufferOffset;
   }
 
@@ -387,13 +406,15 @@ class enviroResponse {
     //deserializes a message object of type enviroResponse
     let len;
     let data = new enviroResponse(null);
-    // Deserialize message field [cmd]
-    data.cmd = geometry_msgs.msg.Twist.deserialize(buffer, bufferOffset);
+    // Deserialize message field [response]
+    data.response = _deserializer.string(buffer, bufferOffset);
     return data;
   }
 
   static getMessageSize(object) {
-    return 48;
+    let length = 0;
+    length += _getByteLength(object.response);
+    return length + 4;
   }
 
   static datatype() {
@@ -403,34 +424,16 @@ class enviroResponse {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'a0c47a2b42626c8e0bd2a277053c6c62';
+    return '6de314e2dc76fbff2b6244a6ad70b68d';
   }
 
   static messageDefinition() {
     // Returns full string definition for message
     return `
     # Response message types
-    geometry_msgs/Twist cmd
+    string response
     
     
-    ================================================================================
-    MSG: geometry_msgs/Twist
-    # This expresses velocity in free space broken into its linear and angular parts.
-    Vector3  linear
-    Vector3  angular
-    
-    ================================================================================
-    MSG: geometry_msgs/Vector3
-    # This represents a vector in free space. 
-    # It is only meant to represent a direction. Therefore, it does not
-    # make sense to apply a translation to it (e.g., when applying a 
-    # generic rigid transformation to a Vector3, tf2 will only apply the
-    # rotation). If you want your data to be translatable too, use the
-    # geometry_msgs/Point message instead.
-    
-    float64 x
-    float64 y
-    float64 z
     `;
   }
 
@@ -440,11 +443,11 @@ class enviroResponse {
       msg = {};
     }
     const resolved = new enviroResponse(null);
-    if (msg.cmd !== undefined) {
-      resolved.cmd = geometry_msgs.msg.Twist.Resolve(msg.cmd)
+    if (msg.response !== undefined) {
+      resolved.response = msg.response;
     }
     else {
-      resolved.cmd = new geometry_msgs.msg.Twist()
+      resolved.response = ''
     }
 
     return resolved;
@@ -454,6 +457,6 @@ class enviroResponse {
 module.exports = {
   Request: enviroRequest,
   Response: enviroResponse,
-  md5sum() { return '7db6d4836f25ca96fe8ff3e313a5f71c'; },
+  md5sum() { return '7057eb40c64cbf8bdf2c3deb4aec57bb'; },
   datatype() { return 'planning/enviro'; }
 };

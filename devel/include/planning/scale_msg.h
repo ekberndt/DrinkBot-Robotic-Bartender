@@ -8,7 +8,11 @@
 
 #include <string>
 #include <vector>
+<<<<<<< HEAD
 #include <map>
+=======
+#include <memory>
+>>>>>>> refs/remotes/origin/main
 
 #include <ros/types.h>
 #include <ros/serialization.h>
@@ -146,7 +150,12 @@ struct Definition< ::planning::scale_msg_<ContainerAllocator> >
 {
   static const char* value()
   {
+<<<<<<< HEAD
     return "float32 mass\n"
+=======
+    return "# Request message types\n"
+"float32 mass\n"
+>>>>>>> refs/remotes/origin/main
 ;
   }
 

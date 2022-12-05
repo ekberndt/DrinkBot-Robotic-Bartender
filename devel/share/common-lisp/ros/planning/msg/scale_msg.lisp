@@ -58,10 +58,17 @@
   "bc896cc245a01cb882740a335971513f")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<scale_msg>)))
   "Returns full string definition for message of type '<scale_msg>"
+<<<<<<< HEAD
   (cl:format cl:nil "float32 mass~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'scale_msg)))
   "Returns full string definition for message of type 'scale_msg"
   (cl:format cl:nil "float32 mass~%~%"))
+=======
+  (cl:format cl:nil "# Request message types~%float32 mass~%~%"))
+(cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'scale_msg)))
+  "Returns full string definition for message of type 'scale_msg"
+  (cl:format cl:nil "# Request message types~%float32 mass~%~%"))
+>>>>>>> refs/remotes/origin/main
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <scale_msg>))
   (cl:+ 0
      4

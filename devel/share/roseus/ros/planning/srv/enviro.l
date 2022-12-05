@@ -18,13 +18,11 @@
   (ros::roseus-add-msgs "geometry_msgs"))
 
 
-(if (not (find-package "GEOMETRY_MSGS"))
-  (ros::roseus-add-msgs "geometry_msgs"))
 
 
 (defclass planning::enviroRequest
   :super ros::object
-  :slots (_obj_posx _obj_posy _obj_posz _obj_orientx _obj_orienty _obj_orientz _obj_orientw _sizex _sizey _sizez _name_obj _goal ))
+  :slots (_obj_posx _obj_posy _obj_posz _obj_orientx _obj_orienty _obj_orientz _obj_orientw _sizex _sizey _sizez _name_obj _orient _goal ))
 
 (defmethod planning::enviroRequest
   (:init
@@ -40,6 +38,7 @@
     ((:sizey __sizey) (make-array 0 :initial-element 0.0 :element-type :float))
     ((:sizez __sizez) (make-array 0 :initial-element 0.0 :element-type :float))
     ((:name_obj __name_obj) (let (r) (dotimes (i 0) (push "" r)) r))
+    ((:orient __orient) nil)
     ((:goal __goal) (instance geometry_msgs::PoseStamped :init))
     )
    (send-super :init)
@@ -54,6 +53,7 @@
    (setq _sizey __sizey)
    (setq _sizez __sizez)
    (setq _name_obj __name_obj)
+   (setq _orient __orient)
    (setq _goal __goal)
    self)
   (:obj_posx
@@ -89,6 +89,9 @@
   (:name_obj
    (&optional __name_obj)
    (if __name_obj (setq _name_obj __name_obj)) _name_obj)
+  (:orient
+   (&optional (__orient :null))
+   (if (not (eq __orient :null)) (setq _orient __orient)) _orient)
   (:goal
    (&rest __goal)
    (if (keywordp (car __goal))
@@ -121,6 +124,8 @@
     (* 4    (length _sizez)) 4
     ;; string[] _name_obj
     (apply #'+ (mapcar #'(lambda (x) (+ 4 (length x))) _name_obj)) 4
+    ;; bool _orient
+    1
     ;; geometry_msgs/PoseStamped _goal
     (send _goal :serialization-length)
     ))
@@ -183,6 +188,8 @@
      (dolist (elem _name_obj)
        (write-long (length elem) s) (princ elem s)
        )
+     ;; bool _orient
+       (if _orient (write-byte -1 s) (write-byte 0 s))
      ;; geometry_msgs/PoseStamped _goal
        (send _goal :serialize s)
      ;;
@@ -266,6 +273,8 @@
      (dotimes (i n)
      (let (n) (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4) (setf (elt _name_obj i) (subseq buf ptr- (+ ptr- n))) (incf ptr- n))
      ))
+   ;; bool _orient
+     (setq _orient (not (= 0 (sys::peek buf ptr- :char)))) (incf ptr- 1)
    ;; geometry_msgs/PoseStamped _goal
      (send _goal :deserialize buf ptr-) (incf ptr- (send _goal :serialization-length))
    ;;
@@ -274,41 +283,37 @@
 
 (defclass planning::enviroResponse
   :super ros::object
-  :slots (_cmd ))
+  :slots (_response ))
 
 (defmethod planning::enviroResponse
   (:init
    (&key
-    ((:cmd __cmd) (instance geometry_msgs::Twist :init))
+    ((:response __response) "")
     )
    (send-super :init)
-   (setq _cmd __cmd)
+   (setq _response (string __response))
    self)
-  (:cmd
-   (&rest __cmd)
-   (if (keywordp (car __cmd))
-       (send* _cmd __cmd)
-     (progn
-       (if __cmd (setq _cmd (car __cmd)))
-       _cmd)))
+  (:response
+   (&optional __response)
+   (if __response (setq _response __response)) _response)
   (:serialization-length
    ()
    (+
-    ;; geometry_msgs/Twist _cmd
-    (send _cmd :serialization-length)
+    ;; string _response
+    4 (length _response)
     ))
   (:serialize
    (&optional strm)
    (let ((s (if strm strm
               (make-string-output-stream (send self :serialization-length)))))
-     ;; geometry_msgs/Twist _cmd
-       (send _cmd :serialize s)
+     ;; string _response
+       (write-long (length _response) s) (princ _response s)
      ;;
      (if (null strm) (get-output-stream-string s))))
   (:deserialize
    (buf &optional (ptr- 0))
-   ;; geometry_msgs/Twist _cmd
-     (send _cmd :deserialize buf ptr-) (incf ptr- (send _cmd :serialization-length))
+   ;; string _response
+     (let (n) (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4) (setq _response (subseq buf ptr- (+ ptr- n))) (incf ptr- n))
    ;;
    self)
   )
@@ -317,7 +322,7 @@
   :super ros::object
   :slots ())
 
-(setf (get planning::enviro :md5sum-) "7db6d4836f25ca96fe8ff3e313a5f71c")
+(setf (get planning::enviro :md5sum-) "7057eb40c64cbf8bdf2c3deb4aec57bb")
 (setf (get planning::enviro :datatype-) "planning/enviro")
 (setf (get planning::enviro :request) planning::enviroRequest)
 (setf (get planning::enviro :response) planning::enviroResponse)
@@ -325,7 +330,7 @@
 (defmethod planning::enviroRequest
   (:response () (instance planning::enviroResponse :init)))
 
-(setf (get planning::enviroRequest :md5sum-) "7db6d4836f25ca96fe8ff3e313a5f71c")
+(setf (get planning::enviroRequest :md5sum-) "7057eb40c64cbf8bdf2c3deb4aec57bb")
 (setf (get planning::enviroRequest :datatype-) "planning/enviroRequest")
 (setf (get planning::enviroRequest :definition-)
       "# Request message types
@@ -340,6 +345,7 @@ float32[] sizex
 float32[] sizey
 float32[] sizez
 string[] name_obj
+bool orient
 
 geometry_msgs/PoseStamped goal
 
@@ -389,29 +395,11 @@ float64 z
 float64 w
 ---
 # Response message types
-geometry_msgs/Twist cmd
+string response
 
-
-================================================================================
-MSG: geometry_msgs/Twist
-# This expresses velocity in free space broken into its linear and angular parts.
-Vector3  linear
-Vector3  angular
-
-================================================================================
-MSG: geometry_msgs/Vector3
-# This represents a vector in free space. 
-# It is only meant to represent a direction. Therefore, it does not
-# make sense to apply a translation to it (e.g., when applying a 
-# generic rigid transformation to a Vector3, tf2 will only apply the
-# rotation). If you want your data to be translatable too, use the
-# geometry_msgs/Point message instead.
-
-float64 x
-float64 y
 ")
 
-(setf (get planning::enviroResponse :md5sum-) "7db6d4836f25ca96fe8ff3e313a5f71c")
+(setf (get planning::enviroResponse :md5sum-) "7057eb40c64cbf8bdf2c3deb4aec57bb")
 (setf (get planning::enviroResponse :datatype-) "planning/enviroResponse")
 (setf (get planning::enviroResponse :definition-)
       "# Request message types
@@ -426,6 +414,7 @@ float32[] sizex
 float32[] sizey
 float32[] sizez
 string[] name_obj
+bool orient
 
 geometry_msgs/PoseStamped goal
 
@@ -475,30 +464,12 @@ float64 z
 float64 w
 ---
 # Response message types
-geometry_msgs/Twist cmd
+string response
 
-
-================================================================================
-MSG: geometry_msgs/Twist
-# This expresses velocity in free space broken into its linear and angular parts.
-Vector3  linear
-Vector3  angular
-
-================================================================================
-MSG: geometry_msgs/Vector3
-# This represents a vector in free space. 
-# It is only meant to represent a direction. Therefore, it does not
-# make sense to apply a translation to it (e.g., when applying a 
-# generic rigid transformation to a Vector3, tf2 will only apply the
-# rotation). If you want your data to be translatable too, use the
-# geometry_msgs/Point message instead.
-
-float64 x
-float64 y
 ")
 
 
 
-(provide :planning/enviro "7db6d4836f25ca96fe8ff3e313a5f71c")
+(provide :planning/enviro "7057eb40c64cbf8bdf2c3deb4aec57bb")
 
 

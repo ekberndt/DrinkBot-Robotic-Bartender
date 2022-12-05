@@ -21,8 +21,10 @@
           SIZEZ
           NAME_OBJ-VAL
           NAME_OBJ
+          ORIENT-VAL
+          ORIENT
           GOAL-VAL
           GOAL
-          CMD-VAL
-          CMD
+          RESPONSE-VAL
+          RESPONSE
 ))

@@ -15,7 +15,6 @@
 #include <ros/builtin_message_traits.h>
 #include <ros/message_operations.h>
 
-#include <geometry_msgs/Twist.h>
 
 namespace planning
 {
@@ -25,17 +24,17 @@ struct enviroResponse_
   typedef enviroResponse_<ContainerAllocator> Type;
 
   enviroResponse_()
-    : cmd()  {
+    : response()  {
     }
   enviroResponse_(const ContainerAllocator& _alloc)
-    : cmd(_alloc)  {
+    : response(_alloc)  {
   (void)_alloc;
     }
 
 
 
-   typedef  ::geometry_msgs::Twist_<ContainerAllocator>  _cmd_type;
-  _cmd_type cmd;
+   typedef std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other >  _response_type;
+  _response_type response;
 
 
 
@@ -66,7 +65,7 @@ return s;
 template<typename ContainerAllocator1, typename ContainerAllocator2>
 bool operator==(const ::planning::enviroResponse_<ContainerAllocator1> & lhs, const ::planning::enviroResponse_<ContainerAllocator2> & rhs)
 {
-  return lhs.cmd == rhs.cmd;
+  return lhs.response == rhs.response;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -99,12 +98,12 @@ struct IsMessage< ::planning::enviroResponse_<ContainerAllocator> const>
 
 template <class ContainerAllocator>
 struct IsFixedSize< ::planning::enviroResponse_<ContainerAllocator> >
-  : TrueType
+  : FalseType
   { };
 
 template <class ContainerAllocator>
 struct IsFixedSize< ::planning::enviroResponse_<ContainerAllocator> const>
-  : TrueType
+  : FalseType
   { };
 
 template <class ContainerAllocator>
@@ -123,12 +122,12 @@ struct MD5Sum< ::planning::enviroResponse_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "a0c47a2b42626c8e0bd2a277053c6c62";
+    return "6de314e2dc76fbff2b6244a6ad70b68d";
   }
 
   static const char* value(const ::planning::enviroResponse_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xa0c47a2b42626c8eULL;
-  static const uint64_t static_value2 = 0x0bd2a277053c6c62ULL;
+  static const uint64_t static_value1 = 0x6de314e2dc76fbffULL;
+  static const uint64_t static_value2 = 0x2b6244a6ad70b68dULL;
 };
 
 template<class ContainerAllocator>
@@ -148,27 +147,8 @@ struct Definition< ::planning::enviroResponse_<ContainerAllocator> >
   static const char* value()
   {
     return "# Response message types\n"
-"geometry_msgs/Twist cmd\n"
+"string response\n"
 "\n"
-"\n"
-"================================================================================\n"
-"MSG: geometry_msgs/Twist\n"
-"# This expresses velocity in free space broken into its linear and angular parts.\n"
-"Vector3  linear\n"
-"Vector3  angular\n"
-"\n"
-"================================================================================\n"
-"MSG: geometry_msgs/Vector3\n"
-"# This represents a vector in free space. \n"
-"# It is only meant to represent a direction. Therefore, it does not\n"
-"# make sense to apply a translation to it (e.g., when applying a \n"
-"# generic rigid transformation to a Vector3, tf2 will only apply the\n"
-"# rotation). If you want your data to be translatable too, use the\n"
-"# geometry_msgs/Point message instead.\n"
-"\n"
-"float64 x\n"
-"float64 y\n"
-"float64 z\n"
 ;
   }
 
@@ -187,7 +167,7 @@ namespace serialization
   {
     template<typename Stream, typename T> inline static void allInOne(Stream& stream, T m)
     {
-      stream.next(m.cmd);
+      stream.next(m.response);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -206,9 +186,8 @@ struct Printer< ::planning::enviroResponse_<ContainerAllocator> >
 {
   template<typename Stream> static void stream(Stream& s, const std::string& indent, const ::planning::enviroResponse_<ContainerAllocator>& v)
   {
-    s << indent << "cmd: ";
-    s << std::endl;
-    Printer< ::geometry_msgs::Twist_<ContainerAllocator> >::stream(s, indent + "  ", v.cmd);
+    s << indent << "response: ";
+    Printer<std::basic_string<char, std::char_traits<char>, typename ContainerAllocator::template rebind<char>::other > >::stream(s, indent + "  ", v.response);
   }
 };
 

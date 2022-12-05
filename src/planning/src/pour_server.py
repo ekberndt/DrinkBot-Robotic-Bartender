@@ -7,7 +7,6 @@ import sys
 from planning.srv import enviro  # Service type
 # from turtlesim.srv import TeleportAbsolute
 from path_test import main #Link to Arm Movement
-from moveit_msgs.msg import OrientationConstraint
 from geometry_msgs.msg import PoseStamped
 from path_planner import PathPlanner
 
@@ -47,29 +46,7 @@ def sawyer_callback(request):
         # plan = planner.plan_to_pose(pos, [])
 
         list_obj.append((size, name, pos))
-    #Create a path constraint for the arm
-    #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
-    #TODO: add conditional taken from srv msg
-    orien_const = OrientationConstraint()
-    orien_const.link_name = "right_gripper";
-    orien_const.header.frame_id = "base";
-    # orien_const.orientation
-    # orien_const.orientation.x = 0.0
-    orien_const.orientation.y = -1.0
-    # orien_const.orientation.z = 0.0
-    # orien_const.orientation.w = 0.0
-
-    orien_const.absolute_x_axis_tolerance = 0.2;
-    orien_const.absolute_y_axis_tolerance = 0.2;
-    orien_const.absolute_z_axis_tolerance = 0.2;
-    orien_const.weight = 1.0;
-
-
-    #If down orientation is needed, constrain it
-    if (request.orient):
-        main(list_obj, end_goal, orien_const)
-    else:
-        main(list_obj, end_goal, None)
+    main(list_obj, end_goal)
 
     # clear_proxy()
     # while not rospy.is_shutdown():
@@ -85,7 +62,7 @@ def sawyer_callback(request):
     #         try:
     #             x, y, z = 0.8, 0.05, 0.07
     #             goal_1 = PoseStamped()
-    #             goal_1.header.frame6                                              _id = "base"
+    #             goal_1.header.frame_id = "base"
 
     #             #x, y, and z position
     #             goal_1.pose.position.x = x
@@ -115,7 +92,7 @@ def sawyer_callback(request):
     #         else:
     #             break
 
-    return "Finished executing pose"  # This line will never be reached
+    return cmd  # This line will never be reached
 
 def sawyer_server():
     # Initialize the server node for turtle1

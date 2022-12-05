@@ -10,9 +10,10 @@ float32[] sizex
 float32[] sizey
 float32[] sizez
 string[] name_obj
+bool orient
 
 geometry_msgs/PoseStamped goal
 
 ---
 # Response message types
-geometry_msgs/Twist cmd
+string response

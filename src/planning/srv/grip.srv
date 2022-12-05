@@ -1,0 +1,6 @@
+# Request message types
+bool grip
+
+---
+# Response message types
+string response
