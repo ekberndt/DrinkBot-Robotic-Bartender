@@ -52,12 +52,8 @@
 (setf (get planning::scale_msg :md5sum-) "bc896cc245a01cb882740a335971513f")
 (setf (get planning::scale_msg :datatype-) "planning/scale_msg")
 (setf (get planning::scale_msg :definition-)
-<<<<<<< HEAD
-      "float32 mass
-=======
       "# Request message types
 float32 mass
->>>>>>> refs/remotes/origin/main
 ")
 
 
