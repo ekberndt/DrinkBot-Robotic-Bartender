@@ -7,10 +7,8 @@
 import rospy
 # from std_msgs.msg import String
 from planning.msg import scale_msg
-<<<<<<< HEAD
+from std_msgs.msg import Float32
 from rosserial_arduino.msg import Adc
-=======
->>>>>>> refs/remotes/origin/main
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
@@ -19,7 +17,7 @@ def callback(message):
 
     # Print the contents of the message to the console
     print("Mass message received. mass: ")
-    print(message.mass)
+    print(message.data)
     # print("Message: " + message.user_message + ", Sent at: " + str(message.timestamp) + ", Received at: " + str(rospy.get_time()))
 
 # Define the method which contains the node's main functionality
@@ -29,15 +27,11 @@ def listener():
     # receive messages of type std_msgs/String from the topic /chatter_talk.
     # Whenever a new message is received, the method callback() will be called
     # with the received message as its first argument.
-<<<<<<< HEAD
 
-    rospy.Subscriber("Sawyer_parms/scalePour", scale_msg, callback)
-    callback(scale_msg)
+    rospy.Subscriber("/arduino/scalePour", Float32, callback)
+    # callback(scale_msg)
     print("ran sub line")
-=======
-    rospy.init_node('listener', anonymous=True)
-    rospy.Subscriber("Sawyer_parms/scalePour", scale_msg, callback)
->>>>>>> refs/remotes/origin/main
+
 
     # Wait for messages to arrive on the subscribed topics, and exit the node
     # when it is killed with Ctrl+C
@@ -51,9 +45,6 @@ if __name__ == '__main__':
     # /listener_<id>, where <id> is a randomly generated numeric string. This
     # randomly generated name means we can start multiple copies of this node
     # without having multiple nodes with the same name, which ROS doesn't allow.
-<<<<<<< HEAD
     rospy.init_node('mass_listener', anonymous=True)
-=======
 
->>>>>>> refs/remotes/origin/main
     listener()

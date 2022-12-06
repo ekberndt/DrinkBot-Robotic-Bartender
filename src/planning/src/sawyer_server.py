@@ -30,6 +30,9 @@ def sawyer_callback(request):
     rospy.loginfo("Got message request")
     list_obj = []
     end_goal = request.goal
+    print(request)
+    # print("goal", request.goal)
+    # print("name_obj", request.name_obj)
 
     for i in range(len(request.name_obj)):
 

@@ -8,10 +8,13 @@ from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
 # from path_planner import get_current_poses
 toggle = 0
-def sawyer_client():
+
+global message_to_return
+
+def sawyer_client(ar_tag):
     global toggle
     # Initialize the client node
-    rospy.init_node('sawyer_client')
+    # rospy.init_node('sawyer_client')
     # Wait until patrol service is ready
     # rospy.wait_for_service('/turtle1/patrol')
     rospy.wait_for_service('/sawyer_parms/enviro')
@@ -49,25 +52,30 @@ def sawyer_client():
         
 
         #pos1
-        pos1 = PoseStamped()
-        # pos1.header.frame_id = "right_gripper_tip"
-        # pos1.pose.position.x = 0.6
-        # pos1.pose.position.y = -0.3
-        # pos1.pose.position.z = 0.0
 
-        # pos1.pose.orientation.x = -0.789
-        # pos1.pose.orientation.y = 0.131
-        # pos1.pose.orientation.z = -0.137
-        # pos1.pose.orientation.w = 0.584
-        pos1.header.frame_id = "base"
-        pos1.pose.position.x = 0.603
-        pos1.pose.position.y = 0.273
-        pos1.pose.position.z = -0.050
+        # pos1 = PoseStamped()
+        pos1 = ar_tag
 
-        pos1.pose.orientation.x = 0.0
-        pos1.pose.orientation.y = -1.0
-        pos1.pose.orientation.z = 0.0
-        pos1.pose.orientation.w = 0.0
+        # # pos1.header.frame_id = "right_gripper_tip"
+        # # pos1.pose.position.x = 0.6
+        # # pos1.pose.position.y = -0.3
+        # # pos1.pose.position.z = 0.0
+
+        # # pos1.pose.orientation.x = -0.789
+        # # pos1.pose.orientation.y = 0.131
+        # # pos1.pose.orientation.z = -0.137
+        # # pos1.pose.orientation.w = 0.584
+        # pos1.header.frame_id = "base"
+        # pos1.pose.position.x = 0.603
+        # pos1.pose.position.y = 0.273
+        # pos1.pose.position.z = -0.050
+
+        # pos1.pose.orientation.x = 0.0
+        # pos1.pose.orientation.y = -1.0
+        # pos1.pose.orientation.z = 0.0
+        # pos1.pose.orientation.w = 0.0
+
+
         # pos1.header.frame_id = "base" 
         # pos1.pose.position.x = 0.815
         # pos1.pose.position.y = 0.215
@@ -186,12 +194,51 @@ def sawyer_client():
                 orient_tf = False
             toggle += 1
 
+            print("sawyer_proxy")
             sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
 
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s"%e)
 
+# Define the callback method which is called whenever this node receives a 
+# message on its subscribed topic. The received message is passed as the first
+# argument to callback().
+def callback(message):
+
+    # Print the contents of the message to the console
+
+    # print("Message: " + message + ", Received at: " + str(rospy.get_time()))
+    print("callback", message)
+    message_to_return = message
+    sawyer_client(message_to_return)
+
+# Define the method which contains the node's main functionality
+def listener():
+
+    # Create a new instance of the rospy.Subscriber object which we can use to
+    # receive messages of type std_msgs/String from the topic /chatter_talk.
+    # Whenever a new message is received, the method callback() will be called
+    # with the received message as its first argument.
+    rospy.Subscriber("user_messages", PoseStamped, callback)
+
+    # Wait for messages to arrive on the subscribed topics, and exit the node
+    # when it is killed with Ctrl+C
+    # try:
+    #     print(message_to_return)
+    # except e:
+    #     print(e)
+    rospy.spin()
+
+    # return coordinates
 
 if __name__ == '__main__':
-    sawyer_client()
+    # Run this program as a new node in the ROS computation graph called
+    # /listener_<id>, where <id> is a randomly generated numeric string. This
+    # randomly generated name means we can start multiple copies of this node
+    # without having multiple nodes with the same name, which ROS doesn't allow.
+    # rospy.init_node('listener', anonymous=True)
+    rospy.init_node('sawyer_client')
+    listener()
+    # print(message_to_return)
+    
 

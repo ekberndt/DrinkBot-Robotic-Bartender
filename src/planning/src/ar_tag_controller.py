@@ -26,7 +26,7 @@ def controller(turtlebot_frame, goal_frame):
   """
 
   # Create a publisher and a tf buffer, which is primed with a tf listener
-  pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+  # pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
   tfBuffer = tf2_ros.Buffer()
   tfListener = tf2_ros.TransformListener(tfBuffer)
   
@@ -39,6 +39,8 @@ def controller(turtlebot_frame, goal_frame):
   # while not rospy.is_shutdown():
   while not found_cup:
     try:
+      print(turtlebot_frame)
+      print(goal_frame)
       trans = tfBuffer.lookup_transform(turtlebot_frame, goal_frame, rospy.Time())
       found_cup = True
       # Process trans to get your state error

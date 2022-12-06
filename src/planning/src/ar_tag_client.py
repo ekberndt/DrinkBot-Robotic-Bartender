@@ -2,8 +2,9 @@
 import numpy as np
 import rospy
 from planning.srv import enviro  # Service type
-# from path_test import main #Link to Arm Movement
+from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import Float32
 # from geometry_msgs.msg import Twist
 import ar_tag_controller
 toggle = 0
@@ -32,9 +33,9 @@ def camera_to_base_frame(base, ar_tag, offset):
     ar_tag_in_base_frame = PoseStamped()
 
     ar_tag_in_base_frame.header.frame_id = "base"
-    ar_tag_in_base_frame.pose.position.x = ar_tag - base.translation.x - offset
-    ar_tag_in_base_frame.pose.position.y = ar_tag - base.translation.y - offset
-    ar_tag_in_base_frame.pose.position.z = ar_tag - base.translation.z - offset
+    ar_tag_in_base_frame.pose.position.x = ar_tag.translation.x - base.translation.x - offset.pose.position.x
+    ar_tag_in_base_frame.pose.position.y = ar_tag.translation.y - base.translation.y - offset.pose.position.y
+    ar_tag_in_base_frame.pose.position.z = ar_tag.translation.z - base.translation.z - offset.pose.position.z
 
     ar_tag_in_base_frame.pose.orientation.x = 0.0
     ar_tag_in_base_frame.pose.orientation.y = -1.0
@@ -46,30 +47,28 @@ def camera_to_base_frame(base, ar_tag, offset):
 def sawyer_client():
     global toggle
     # Initialize the client node
-    rospy.init_node('ar_tag_client')
+    # rospy.init_node('ar_tag_client')
     # Wait until sawyer_params/enviro topic
-    rospy.wait_for_service('/sawyer_parms/enviro')
+    print("Wait")
+    # rospy.wait_for_service('/sawyer_parms/enviro')
+    print("Continue")
     try:
         # Acquire service proxy
         sawyer_proxy = rospy.ServiceProxy(
             '/sawyer_parms/enviro', enviro)
 
-
-        # vel = 2.0  # Linear velocity
-        # omega = 1.0  # Angular velocity
-
         #Test Case 1 Obstacle
-        # obj_posx = np.array([2])
-        # obj_posy = np.array([2])
-        # obj_posz = np.array([2])
-        # obj_orientx = np.array([0.5])
-        # obj_orienty = np.array([0])
-        # obj_orientz = np.array([0])
-        # obj_orientw = np.array([0])
-        # sizex = np.array([0.5])
-        # sizey = np.array([0.5])
-        # sizez = np.array([0.5])
-        # name_obj = np.array(["Brick"])
+        obj_posx = np.array([2])
+        obj_posy = np.array([2])
+        obj_posz = np.array([2])
+        obj_orientx = np.array([0.5])
+        obj_orienty = np.array([0])
+        obj_orientz = np.array([0])
+        obj_orientw = np.array([0])
+        sizex = np.array([0.5])
+        sizey = np.array([0.5])
+        sizez = np.array([0.5])
+        name_obj = np.array(["Brick"])
 
         # goal = PoseStamped()
         # goal.pose.position.x = 0.502
@@ -84,58 +83,141 @@ def sawyer_client():
 
         
         # Call ar_tag_controller to get translation from camera frame to a given ar tag
-        ar_marker_1 = ar_tag_controller.controller("base_link", "ar_marker_1")
+        # 1 inch = 0.0266 robot units
+        offset = PoseStamped()
+        offset.header.frame_id = "base"
+        offset.pose.position.x = 4 * 0.0266
+        offset.pose.position.y = 0
+        offset.pose.position.z = 0
+        offset.pose.orientation.x = 0.0
+        offset.pose.orientation.y = -1.0
+        offset.pose.orientation.z = 0.0
+        offset.pose.orientation.w = 0.0
 
-        # #pos1
-        # pos1 = PoseStamped()
-        # pos1.header.frame_id = "base"
-        # pos1.pose.position.x = 0.603
-        # pos1.pose.position.y = 0.273
-        # pos1.pose.position.z = 0.046
+        print("TEst")
+        ar_marker_base = ar_tag_controller.controller("base_link", "ar_marker_15") # Base ar_tag
+        # ar_marker_11 = ar_tag_controller.controller("base_link", "ar_marker_11") # Blue cup
+        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Blue cup
+        # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
+        ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
+        print("2")
 
-        # pos1.pose.orientation.x = 0.0
-        # pos1.pose.orientation.y = -1.0
-        # pos1.pose.orientation.z = 0.0
-        # pos1.pose.orientation.w = 0.0
-
-        # #pos2
-        # pos2 = PoseStamped()
-        # pos2.header.frame_id = "base"
-        # pos2.pose.position.x = 0.603
-        # pos2.pose.position.y = 0.273
-        # pos2.pose.position.z = -0.120
-
-        # pos2.pose.orientation.x = 0.0
-        # pos2.pose.orientation.y = -1.0
-        # pos2.pose.orientation.z = 0.0
-        # pos2.pose.orientation.w = 0.0
+        # Create an instance of the rospy.Publisher object which we can  use to
+        # publish messages to a topic. This publisher publishes messages of type
+        # std_msgs/String to the topic /chatter_talk
+        pub = rospy.Publisher('user_messages', Float32, queue_size=10)
         
+        # Create a timer object that will sleep long enough to result in a 10Hz
+        # publishing rate
+        r = rospy.Rate(10) # 10hz
         rospy.loginfo('Sending ar tag positions')
-        # Call patrol service via the proxy
-        positions = 1
-        i = 0
-        # while not rospy.is_shutdown():
-        while i < positions:
-            # input("press enter to move")
-            if toggle % positions == 0:
-            # if i == 0:
-                goal = pos1
-                orient_tf = False
-            elif toggle % positions == 1:
-            # elif
-                goal = pos2
-                orient_tf = True
-            else:
-                goal = pos3
-                orient_tf = True
-            toggle += 1
+        test = PoseStamped()
+        test.pose.position.x = 1
+        test1 = 4
+        print(test)
+        pub.publish(test1)
+        print("Published")
 
-            sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+        # rospy.loginfo('Sending ar tag positions')
+        # Call patrol service via the proxy
+        # positions = 1
+        # i = 0
+        # # while not rospy.is_shutdown():
+        # while i < positions:
+        #     # input("press enter to move")
+        #     if toggle % positions == 0:
+        #     # if i == 0:
+        #         goal = ar_marker_14_base
+        #         orient_tf = False
+        #         i += 1
+        #     elif toggle % positions == 1:
+        #     # elif
+        #         goal = pos2
+        #         orient_tf = False
+        #     else:
+        #         goal = pos3
+        #         orient_tf = False
+        #     toggle += 1
+
+        #     print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+        #     sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
 
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s"%e)
 
+    rospy.spin()
+
+# Define the method which contains the node's main functionality
+def talker():
+    global toggle
+    # Initialize the client node
+    # rospy.init_node('ar_tag_client')
+    # Wait until sawyer_params/enviro topic
+    print("Wait")
+    # rospy.wait_for_service('/sawyer_parms/enviro')
+    print("Continue")
+    # Acquire service proxy
+    sawyer_proxy = rospy.ServiceProxy(
+        '/sawyer_parms/enviro', enviro)
+
+    # Create an instance of the rospy.Publisher object which we can  use to
+    # publish messages to a topic. This publisher publishes messages of type
+    # std_msgs/String to the topic /chatter_talk
+    pub = rospy.Publisher('user_messages', PoseStamped, queue_size=10)
+    
+    # Create a timer object that will sleep long enough to result in a 10Hz
+    # publishing rate
+    r = rospy.Rate(10) # 10hz
+
+    # Loop until the node is killed with Ctrl-C
+    while not rospy.is_shutdown():
+        # Construct a string that we want to publish (in Python, the "%"
+        # operator functions similarly to sprintf in C or MATLAB)
+        # pub_string = "Please enter a line of text and press <Enter>"
+        # print(pub_string)
+        # user_string = input()
+        # time_stamp = rospy.get_time()
+        # item = TimestampString(user_string, time_stamp)
+        # Publish our string to the 'chatter_talk' topic
+        # # Acquire service proxy
+        # sawyer_proxy = rospy.ServiceProxy(
+        #     '/sawyer_parms/enviro', enviro)
+        offset = PoseStamped()
+        offset.header.frame_id = "base"
+        offset.pose.position.x = 4 * 0.0266
+        offset.pose.position.y = 0
+        offset.pose.position.z = 0
+        offset.pose.orientation.x = 0.0
+        offset.pose.orientation.y = -1.0
+        offset.pose.orientation.z = 0.0
+        offset.pose.orientation.w = 0.0
+
+        print("TEst")
+        ar_marker_base = ar_tag_controller.controller("base_link", "ar_marker_15") # Base ar_tag
+        # ar_marker_11 = ar_tag_controller.controller("base_link", "ar_marker_11") # Blue cup
+        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Blue cup
+        # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
+        ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
+        print("2")
+
+        rospy.loginfo('Sending ar tag positions')
+        test = PoseStamped()
+        pub.publish(ar_marker_14_base)
+        rospy.loginfo('Published')
+        # print(rospy.get_name() + ": I sent \"%s\"" % user_string)
+        
+        # Use our rate object to sleep until it is time to publish again
+        r.sleep()
+
 
 if __name__ == '__main__':
-    sawyer_client()
+    # Run this program as a new node in the ROS computation graph called /talker.
+    rospy.init_node('talker', anonymous=True)
+
+    # Check if the node has received a signal to shut down. If not, run the
+    # talker method.
+    try:
+        talker()
+    except rospy.ROSInterruptException: pass
+    # sawyer_client()
 
