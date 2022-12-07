@@ -74,7 +74,7 @@ def controller(turtlebot_frame, goal_frame):
       # pub.publish(twist_cmd)
       return info
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-      # print("Exception thrown ", e)
+      print("Exception thrown ", e)
       pass
     # # Use our rate object to sleep until it is time to publish again
     # r.sleep()

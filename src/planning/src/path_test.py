@@ -186,20 +186,23 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             #Code block to cycle through plans on rviz
             while(repeat):
                 i = 0
-                n = 100
+                n = 50
                 plan = planner.plan_to_pose(goal_1, put_orient_const)
                 while i < n:
                     new_plan = planner.plan_to_pose(goal_1, put_orient_const)
                     print("size of jt  points: %d"%len(new_plan[1].joint_trajectory.points))
-                    if (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
+                    if(len(new_plan[1].joint_trajectory.points) == 0):
+                        pass
+                    elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
                         plan = new_plan
                     i = i + 1
                 # print(plan)
-                answer = input("y if go, n if no, abort if pro\n")
-                print("your answer: %s"%answer)
-                if "abort" in answer:
-                    return "mission abort"
-                repeat = "y"  not in answer
+                # answer = input("y if go, n if no, abort if pro\n")
+                # print("your answer: %s"%answer)
+                # if "abort" in answer:
+                #     return "mission abort"
+                # repeat = "y"  not in answer
+                repeat = False
                 # print(repeat)
             # input("Press <Enter> to move the right arm to goal pose 1: ")
             print("OG PLAN", plan, '\n\n\n')

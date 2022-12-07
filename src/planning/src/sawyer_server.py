@@ -80,6 +80,7 @@ def sawyer_callback(request):
 
 
     #If down orientation is needed, constrain it
+    
     if (request.orient):
         main(list_obj, end_goal, orien_const)
     else:

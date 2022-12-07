@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dir="~/DrinkBot-Robotic-Bartender"
-robot="alice"
+robot="ada"
 tmux new -d -s ros_view
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
