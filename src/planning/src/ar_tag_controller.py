@@ -39,8 +39,8 @@ def controller(turtlebot_frame, goal_frame):
   # while not rospy.is_shutdown():
   while not found_cup:
     try:
-      print(turtlebot_frame)
-      print(goal_frame)
+      # print(turtlebot_frame)
+      # print(goal_frame)
       trans = tfBuffer.lookup_transform(turtlebot_frame, goal_frame, rospy.Time())
       found_cup = True
       # Process trans to get your state error
@@ -53,14 +53,14 @@ def controller(turtlebot_frame, goal_frame):
       # control_command = matrix1 @ vector2
       # print(control_command)
       # twist_cmd = Twist()
-      print("info: ", info)
-      print("Translation x: ", info.translation.x)
-      print("Translation y: ", info.translation.y)
-      print("Translation z: ", info.translation.z)
-      print("Rotation x: ", info.rotation.x)
-      print("Rotation y: ", info.rotation.y)
-      print("Rotation z: ", info.rotation.z)
-      print("Rotation w: ", info.rotation.w)
+      # print("info: ", info)
+      # print("Translation x: ", info.translation.x)
+      # print("Translation y: ", info.translation.y)
+      # print("Translation z: ", info.translation.z)
+      # print("Rotation x: ", info.rotation.x)
+      # print("Rotation y: ", info.rotation.y)
+      # print("Rotation z: ", info.rotation.z)
+      # print("Rotation w: ", info.rotation.w)
 
       # twist_cmd.linear.x = K1 * info.translation.x
       # twist_cmd.linear.x = 0
@@ -74,7 +74,7 @@ def controller(turtlebot_frame, goal_frame):
       # pub.publish(twist_cmd)
       return info
     except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
-      print("Exception thrown ", e)
+      # print("Exception thrown ", e)
       pass
     # # Use our rate object to sleep until it is time to publish again
     # r.sleep()

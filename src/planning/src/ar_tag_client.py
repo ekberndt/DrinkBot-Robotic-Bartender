@@ -33,14 +33,20 @@ def camera_to_base_frame(base, ar_tag, offset):
     ar_tag_in_base_frame = PoseStamped()
 
     ar_tag_in_base_frame.header.frame_id = "base"
-    ar_tag_in_base_frame.pose.position.x = ar_tag.translation.x - base.translation.x - offset.pose.position.x
-    ar_tag_in_base_frame.pose.position.y = ar_tag.translation.y - base.translation.y - offset.pose.position.y
-    ar_tag_in_base_frame.pose.position.z = ar_tag.translation.z - base.translation.z - offset.pose.position.z
+    print("ar_tag")
+    print(ar_tag)
+    print("base")
+    print(base)
+    ar_tag_in_base_frame.pose.position.x = ar_tag.translation.x + base.translation.x - offset.pose.position.x
+    ar_tag_in_base_frame.pose.position.y = ar_tag.translation.y + base.translation.y - offset.pose.position.y
+    ar_tag_in_base_frame.pose.position.z = ar_tag.translation.z + base.translation.z - offset.pose.position.z
 
     ar_tag_in_base_frame.pose.orientation.x = 0.0
     ar_tag_in_base_frame.pose.orientation.y = -1.0
     ar_tag_in_base_frame.pose.orientation.z = 0.0
     ar_tag_in_base_frame.pose.orientation.w = 0.0
+    print("ar_tag_in_base_frame")
+    print(ar_tag_in_base_frame)
 
     return ar_tag_in_base_frame
 
@@ -95,13 +101,11 @@ def sawyer_client():
         offset.pose.orientation.z = 0.0
         offset.pose.orientation.w = 0.0
 
-        print("TEst")
-        ar_marker_base = ar_tag_controller.controller("base_link", "ar_marker_15") # Base ar_tag
-        # ar_marker_11 = ar_tag_controller.controller("base_link", "ar_marker_11") # Blue cup
-        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Blue cup
+        ar_marker_base = ar_tag_controller.controller("camera_link", "ar_marker_15") # Base ar_tag
+        # ar_marker_11 = ar_tag_controller.controller("camera_link", "ar_marker_11") # Blue cup
+        ar_marker_14 = ar_tag_controller.controller("camera_link", "ar_marker_14") # Blue cup
         # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
         ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
-        print("2")
 
         # Create an instance of the rospy.Publisher object which we can  use to
         # publish messages to a topic. This publisher publishes messages of type
@@ -166,7 +170,39 @@ def talker():
     # std_msgs/String to the topic /chatter_talk
     pub = rospy.Publisher('user_messages', PoseStamped, queue_size=10)
     
-    # Create a timer object that will sleep long enough to result in a 10Hz
+    # Create a timer object that will sleep long enough to result in a 10Hzoffset = PoseStamped()
+    offset = PoseStamped()
+    offset.header.frame_id = "base"
+    offset.pose.position.x = 4 * 0.0266
+    offset.pose.position.y = 0
+    offset.pose.position.z = 0
+    offset.pose.orientation.x = 0.0
+    offset.pose.orientation.y = -1.0
+    offset.pose.orientation.z = 0.0
+    offset.pose.orientation.w = 0.0
+
+    # test_pos = PoseStamped()
+    # test_pos.header.frame_id = "base"
+    # test_pos.pose.position.x = 0.5
+    # test_pos.pose.position.y = 0.5
+    # test_pos.pose.position.z = 1
+    # test_pos.pose.orientation.x = 0.0
+    # test_pos.pose.orientation.y = -1.0
+    # test_pos.pose.orientation.z = 0.0
+    # test_pos.pose.orientation.w = 0.0
+
+    ar_marker_base = ar_tag_controller.controller("camera_link", "ar_marker_15") # Base ar_tag
+    # ar_marker_11 = ar_tag_controller.controller("camera_link", "ar_marker_11") # Blue cup
+    ar_marker_14 = ar_tag_controller.controller("camera_link", "ar_marker_14") # Green cup
+    # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
+    ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
+
+    rospy.loginfo('Sending ar tag positions')
+    test = PoseStamped()
+    pub.publish(ar_marker_14_base)
+    # pub.publish(test_pos)
+    rospy.loginfo('Published')
+    # print(rospy.get_name() + ": I sent \"%s\"" % user_string)
     # publishing rate
     r = rospy.Rate(10) # 10hz
 
@@ -183,40 +219,41 @@ def talker():
         # # Acquire service proxy
         # sawyer_proxy = rospy.ServiceProxy(
         #     '/sawyer_parms/enviro', enviro)
-        offset = PoseStamped()
-        offset.header.frame_id = "base"
-        offset.pose.position.x = 4 * 0.0266
-        offset.pose.position.y = 0
-        offset.pose.position.z = 0
-        offset.pose.orientation.x = 0.0
-        offset.pose.orientation.y = -1.0
-        offset.pose.orientation.z = 0.0
-        offset.pose.orientation.w = 0.0
+        try:
+            offset = PoseStamped()
+            offset.header.frame_id = "base"
+            offset.pose.position.x = 4 * 0.0266
+            offset.pose.position.y = 0
+            offset.pose.position.z = 0
+            offset.pose.orientation.x = 0.0
+            offset.pose.orientation.y = -1.0
+            offset.pose.orientation.z = 0.0
+            offset.pose.orientation.w = 0.0
 
-        # test_pos = PoseStamped()
-        # test_pos.header.frame_id = "base"
-        # test_pos.pose.position.x = 0.5
-        # test_pos.pose.position.y = 0.5
-        # test_pos.pose.position.z = 1
-        # test_pos.pose.orientation.x = 0.0
-        # test_pos.pose.orientation.y = -1.0
-        # test_pos.pose.orientation.z = 0.0
-        # test_pos.pose.orientation.w = 0.0
+            # test_pos = PoseStamped()
+            # test_pos.header.frame_id = "base"
+            # test_pos.pose.position.x = 0.5
+            # test_pos.pose.position.y = 0.5
+            # test_pos.pose.position.z = 1
+            # test_pos.pose.orientation.x = 0.0
+            # test_pos.pose.orientation.y = -1.0
+            # test_pos.pose.orientation.z = 0.0
+            # test_pos.pose.orientation.w = 0.0
 
-        print("TEst")
-        ar_marker_base = ar_tag_controller.controller("base_link", "ar_marker_15") # Base ar_tag
-        # ar_marker_11 = ar_tag_controller.controller("base_link", "ar_marker_11") # Blue cup
-        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Green cup
-        # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
-        ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
-        print("2")
+            ar_marker_base = ar_tag_controller.controller("camera_link", "ar_marker_15") # Base ar_tag
+            # ar_marker_11 = ar_tag_controller.controller("camera_link", "ar_marker_11") # Blue cup
+            ar_marker_14 = ar_tag_controller.controller("camera_link", "ar_marker_14") # Green cup
+            # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
+            ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
 
-        rospy.loginfo('Sending ar tag positions')
-        test = PoseStamped()
-        pub.publish(ar_marker_14_base)
-        # pub.publish(test_pos)
-        rospy.loginfo('Published')
-        # print(rospy.get_name() + ": I sent \"%s\"" % user_string)
+            rospy.loginfo('Sending ar tag positions')
+            test = PoseStamped()
+            pub.publish(ar_marker_14_base)
+            # pub.publish(test_pos)
+            rospy.loginfo('Published')
+            # print(rospy.get_name() + ": I sent \"%s\"" % user_string)
+        except e:
+            pass
         
         # Use our rate object to sleep until it is time to publish again
         r.sleep()

@@ -49,18 +49,18 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     # #
 
     #TABLE OBSTACLE
-    # size = np.array([0.40, 1.20, 0.10])
-    # name = "basic_box"
-    # pos = PoseStamped()
-    # pos.header.frame_id = "base"
-    # pos.pose.position.x = 0.55
-    # pos.pose.position.y = 0
-    # pos.pose.position.z = -0.21
-    # pos.pose.orientation.x = 0
-    # pos.pose.orientation.y = 0
-    # pos.pose.orientation.z = 0
-    # pos.pose.orientation.w = 1
-    # planner.add_box_obstacle(size, name, pos)
+    size = np.array([0.40, 1.20, 0.10])
+    name = "basic_box"
+    pos = PoseStamped()
+    pos.header.frame_id = "base"
+    pos.pose.position.x = 0.55
+    pos.pose.position.y = 0
+    pos.pose.position.z = -0.21
+    pos.pose.orientation.x = 0
+    pos.pose.orientation.y = 0
+    pos.pose.orientation.z = 0
+    pos.pose.orientation.w = 1
+    planner.add_box_obstacle(size, name, pos)
     # for obstacle in obj_arr:
     #     planner.add_box_obstacle(obstacle[0], obstacle[1], obstacle[2])
 

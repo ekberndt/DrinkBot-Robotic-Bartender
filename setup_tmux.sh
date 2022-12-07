@@ -28,7 +28,7 @@ tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 # tmux send "roslaunch lab4_cam ar_track.launch" Enter
 tmux send "./intera.sh ada.local" Enter
-tmux send "roslaunch sawyer_moveit_config sawyer_moveit.launch" Enter
+tmux send "roslaunch sawyer_moveit_config sawyer_moveit.launch electric_gripper:=true" Enter
 
 
 
