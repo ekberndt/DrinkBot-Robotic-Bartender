@@ -86,11 +86,12 @@ def sawyer_client():
         # 1 inch = 0.0266 robot units
         offset = PoseStamped()
         offset.header.frame_id = "base"
-        offset.pose.position.x = 4 * 0.0266
+        # offset.pose.position.x = 4 * 0.0266
+        offset.pose.position.x = 0
         offset.pose.position.y = 0
         offset.pose.position.z = 0
         offset.pose.orientation.x = 0.0
-        offset.pose.orientation.y = -1.0
+        offset.pose.orientation.y = 0.0
         offset.pose.orientation.z = 0.0
         offset.pose.orientation.w = 0.0
 
@@ -192,10 +193,20 @@ def talker():
         offset.pose.orientation.z = 0.0
         offset.pose.orientation.w = 0.0
 
+        # test_pos = PoseStamped()
+        # test_pos.header.frame_id = "base"
+        # test_pos.pose.position.x = 0.5
+        # test_pos.pose.position.y = 0.5
+        # test_pos.pose.position.z = 1
+        # test_pos.pose.orientation.x = 0.0
+        # test_pos.pose.orientation.y = -1.0
+        # test_pos.pose.orientation.z = 0.0
+        # test_pos.pose.orientation.w = 0.0
+
         print("TEst")
         ar_marker_base = ar_tag_controller.controller("base_link", "ar_marker_15") # Base ar_tag
         # ar_marker_11 = ar_tag_controller.controller("base_link", "ar_marker_11") # Blue cup
-        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Blue cup
+        ar_marker_14 = ar_tag_controller.controller("base_link", "ar_marker_14") # Green cup
         # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
         ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
         print("2")
@@ -203,6 +214,7 @@ def talker():
         rospy.loginfo('Sending ar tag positions')
         test = PoseStamped()
         pub.publish(ar_marker_14_base)
+        # pub.publish(test_pos)
         rospy.loginfo('Published')
         # print(rospy.get_name() + ": I sent \"%s\"" % user_string)
         

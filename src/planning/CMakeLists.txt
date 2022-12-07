@@ -17,18 +17,18 @@ find_package(catkin REQUIRED
 )
 
 #ADDED FOR ARDUINO PUBLISHING
-rosserial_generate_ros_lib(
-    PACKAGE rosserial_arduino
-    SCRIPT make_libraries.py
-    ) 
+#rosserial_generate_ros_lib(
+#    PACKAGE rosserial_arduino
+#    SCRIPT make_libraries.py
+#    ) 
    
-rosserial_configure_client(
-    DIRECTORY firmware
-    TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
-    )
+#rosserial_configure_client(
+#    DIRECTORY firmware
+#    TOOLCHAIN_FILE ${ROSSERIAL_ARDUINO_TOOLCHAIN}
+#    )
  
-rosserial_add_client_target(firmware hello ALL)
-rosserial_add_client_target(firmware hello-upload)
+#rosserial_add_client_target(firmware hello ALL)
+#rosserial_add_client_target(firmware hello-upload)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

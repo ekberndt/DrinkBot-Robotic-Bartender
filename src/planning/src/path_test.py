@@ -123,24 +123,24 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     # waypoints.append(copy.deepcopy(wpose))
 
 
-    orien_const = OrientationConstraint()
-    orien_const.link_name = "right_gripper_tip";
-    orien_const.header.frame_id = "base";
-    orien_const.orientation.x = 1.0;
-    orien_const.orientation.y = 0.0;
-    orien_const.orientation.z = 0.0;
-    orien_const.absolute_x_axis_tolerance = 0.2;
-    orien_const.absolute_y_axis_tolerance = 0.2;
-    orien_const.absolute_z_axis_tolerance = 0.2;
-    orien_const.weight = 1.0;
+    # orien_const = OrientationConstraint()
+    # orien_const.link_name = "right_gripper_tip";
+    # orien_const.header.frame_id = "base";
+    # orien_const.orientation.x = 1.0;
+    # orien_const.orientation.y = 0.0;
+    # orien_const.orientation.z = 0.0;
+    # orien_const.absolute_x_axis_tolerance = 0.2;
+    # orien_const.absolute_y_axis_tolerance = 0.2;
+    # orien_const.absolute_z_axis_tolerance = 0.2;
+    # orien_const.weight = 1.0;
 
-    orien_const_2 = PositionConstraint()
-    orien_const_2.link_name = "right_gripper_tip";
-    orien_const_2.header.frame_id = "base";
-    orien_const_2.target_point_offset.x = 0.6;
-    orien_const_2.target_point_offset.y = -0.3;
-    orien_const_2.target_point_offset.z = 0.0;
-    orien_const_2.weight = 1.0;
+    # orien_const_2 = PositionConstraint()
+    # orien_const_2.link_name = "right_gripper_tip";
+    # orien_const_2.header.frame_id = "base";
+    # orien_const_2.target_point_offset.x = 0.6;
+    # orien_const_2.target_point_offset.y = -0.3;
+    # orien_const_2.target_point_offset.z = 0.0;
+    # orien_const_2.weight = 1.0;
 
 
 

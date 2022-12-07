@@ -6,9 +6,9 @@
 # Import the dependencies as described in example_pub.py
 import rospy
 # from std_msgs.msg import String
-from planning.msg import scale_msg
+# from planning.msg import scale_msg
 from std_msgs.msg import Float32
-from rosserial_arduino.msg import Adc
+# from rosserial_arduino.msg import Adc
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
