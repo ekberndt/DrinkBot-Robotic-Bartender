@@ -37,9 +37,9 @@ def camera_to_base_frame(base, ar_tag, offset):
     print(ar_tag)
     print("base")
     print(base)
-    ar_tag_in_base_frame.pose.position.x = ar_tag.translation.x + base.translation.x - offset.pose.position.x
-    ar_tag_in_base_frame.pose.position.y = ar_tag.translation.y + base.translation.y - offset.pose.position.y
-    ar_tag_in_base_frame.pose.position.z = ar_tag.translation.z + base.translation.z - offset.pose.position.z
+    ar_tag_in_base_frame.pose.position.x = -(ar_tag.translation.x - base.translation.x) - offset.pose.position.x
+    ar_tag_in_base_frame.pose.position.y = -(ar_tag.translation.y - base.translation.y) - offset.pose.position.y
+    ar_tag_in_base_frame.pose.position.z = -(ar_tag.translation.z - base.translation.z) - offset.pose.position.z
 
     ar_tag_in_base_frame.pose.orientation.x = 0.0
     ar_tag_in_base_frame.pose.orientation.y = -1.0
