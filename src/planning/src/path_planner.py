@@ -88,6 +88,7 @@ class PathPlanner(object):
         print("Current Robot State: ", self._robot.get_current_state())
         return self._robot.get_current_state()
 
+
     def shutdown(self):
         """
         Code to run on shutdown. This is good practice for safety
@@ -96,6 +97,12 @@ class PathPlanner(object):
         """
         self._group = None
         rospy.loginfo("Stopping Path Planner")
+
+    def get_current_joint_values(self):
+        """
+        Returns joint values
+        """
+        return self._group.get_current_joint_values()
 
     def plan_to_pose(self, target, orientation_constraints = [], position_constraints = []):
         """

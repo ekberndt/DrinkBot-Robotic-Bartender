@@ -16,7 +16,8 @@ from geometry_msgs.msg import Pose
 from path_planner import PathPlanner
 from planning.srv import enviro  # Service type
 
-import joint_position_angles
+from joint_position_angles import map_keyboard
+# from set_angles import set_joint_angles
 
 try:
     from controller import Controller
@@ -172,7 +173,8 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             print('moving to x: ' + str(goal_1.pose.position.x))
             print('moving to y: ' + str(goal_1.pose.position.y))
             print('moving to z: ' + str(goal_1.pose.position.z))
-            put_orient_const = [orien_const] if orien_const is not None else []
+            # put_orient_const = [orien_const] if orien_const is not None else []
+            put_orient_const = []
             repeat = True
 
             #Code block to choose most efficient path out of n paths cycled through
@@ -186,50 +188,56 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             #     i = i + 1
             
             #Code block to cycle through plans on rviz
-            while(repeat):
-                i = 0
-                n = 50
-                plan = planner.plan_to_pose(goal_1, put_orient_const)
-                while i < n:
-                    new_plan = planner.plan_to_pose(goal_1, put_orient_const)
-                    print("size of jt  points: %d"%len(new_plan[1].joint_trajectory.points))
-                    if(len(new_plan[1].joint_trajectory.points) == 0):
-                        pass
-                    elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
-                        plan = new_plan
-                    i = i + 1
-                # print(plan)
-                # answer = input("y if go, n if no, abort if pro\n")
-                # print("your answer: %s"%answer)
-                # if "abort" in answer:
-                #     return "mission abort"
-                # repeat = "y"  not in answer
-                repeat = False
-                # print(repeat)
-            # input("Press <Enter> to move the right arm to goal pose 1: ")
-            print("OG PLAN", plan, '\n\n\n')
-            # print(plan[1])
-            # if not planner.execute_plan(plan[1]): 
-            # if not planner.execute_plan(plan[1]):
-            #     raise Exception("Execution failed")
-            if not controller.execute_plan(plan[1]):
-                raise Exception("Execution failed")
-            planner.get_group().set_start_state_to_current_state()
+            if (not orien_const):
+                while(repeat):
+                    i = 0
+                    n = 50
+                    plan = planner.plan_to_pose(goal_1, put_orient_const)
+                    while i < n:
+                        new_plan = planner.plan_to_pose(goal_1, put_orient_const)
+                        print("size of jt  points: %d"%len(new_plan[1].joint_trajectory.points))
+                        if(len(new_plan[1].joint_trajectory.points) == 0):
+                            pass
+                        elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
+                            plan = new_plan
+                        i = i + 1
+                    # print(plan)
+                    # answer = input("y if go, n if no, abort if pro\n")
+                    # print("your answer: %s"%answer)
+                    # if "abort" in answer:
+                    #     return "mission abort"
+                    # repeat = "y"  not in answer
+                    repeat = False
+                    # print(repeat)
+                # input("Press <Enter> to move the right arm to goal pose 1: ")
+                print("OG PLAN", plan, '\n\n\n')
+                # print(plan[1])
+                # if not planner.execute_plan(plan[1]): 
+                # if not planner.execute_plan(plan[1]):
+                #     raise Exception("Execution failed")
+                if not controller.execute_plan(plan[1]):
+                    raise Exception("Execution failed")
+                planner.get_group().set_start_state_to_current_state()
 
             # Do FK
-            if (orien_const):
-                curr_state = planner.get_current_joint_values()
-                print(curr_state)
+            else:
+                # curr_state = planner.get_current_joint_values()
+                # print("curr_state")
+                # print()
+                # print(curr_state)
+                # angles = curr_state.positions
                 seven_angles = {
-                    joints[0]: one,
-                    joints[1]: two,
-                    joints[2]: three,
-                    joints[3]: four,
-                    joints[4]: five,
-                    joints[5]: six,
-                    joints[6]: seven,
+                    'joints0': 0.35,
+                    'joints1': -0.72,
+                    'joints2': -0.53,
+                    'joints3': 1.65,
+                    'joints4': 0.14,
+                    'joints5': -1,
+                    'joints6': 2.1,
                 }
-                joint_position_angles.set_joint_angles(seven_angles)
+                thing = map_keyboard('right')
+
+                thing.set_joint_angles(seven_angles)
 
             break
         except Exception as e:

@@ -163,8 +163,8 @@ def sawyer_client():
         # 1 inch = 0.0266 robot units
         offset = PoseStamped()
         offset.header.frame_id = "base"
-        offset.pose.position.x = 0
-        offset.pose.position.y = 1.5 * 0.0266
+        offset.pose.position.x = -1.5 * 0.0266
+        offset.pose.position.y = -1 * 0.0266
         offset.pose.position.z = 5.5 * 0.0266
         offset.pose.orientation.x = 0.0
         offset.pose.orientation.y = 0.0
@@ -199,7 +199,7 @@ def sawyer_client():
         pos2.header.frame_id = "base"
         pos2.pose.position.x = pos1.pose.position.x
         pos2.pose.position.y = pos1.pose.position.y
-        pos2.pose.position.z = pos1.pose.position.z - 2 * 0.0266
+        pos2.pose.position.z = pos1.pose.position.z - 5 * 0.0266
         pos2.pose.orientation.x = pos1.pose.orientation.x
         pos2.pose.orientation.y = pos1.pose.orientation.y
         pos2.pose.orientation.z = pos1.pose.orientation.z
@@ -208,8 +208,8 @@ def sawyer_client():
         ar_marker_11_base_added_z = PoseStamped()
         ar_marker_11_base_added_z.header.frame_id = "base"
         ar_marker_11_base_added_z.pose.position.x = ar_marker_11_base.pose.position.x
-        ar_marker_11_base_added_z.pose.position.y = ar_marker_11_base.pose.position.y
-        ar_marker_11_base_added_z.pose.position.z = ar_marker_11_base.pose.position.z + 4 * 0.0266
+        ar_marker_11_base_added_z.pose.position.y = ar_marker_11_base.pose.position.y + 3 * 0.0266
+        ar_marker_11_base_added_z.pose.position.z = ar_marker_11_base.pose.position.z + 13 * 0.0266
         ar_marker_11_base_added_z.pose.orientation.x = ar_marker_11_base.pose.orientation.x
         ar_marker_11_base_added_z.pose.orientation.y = ar_marker_11_base.pose.orientation.y
         ar_marker_11_base_added_z.pose.orientation.z = ar_marker_11_base.pose.orientation.z
@@ -264,12 +264,16 @@ def sawyer_client():
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
             elif i == 5:
                 print("5")
-                grip_client(False)
-            elif i == 6:    
-                print("6")
                 orient_tf = True
                 print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                
+            elif i == 6:    
+                print("6")
+                # orient_tf = True
+                # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                grip_client(False)
                 # planner = PathPlanner("right_arm")
                 # curr_state = planner.get_state()
                 # print(curr_state)

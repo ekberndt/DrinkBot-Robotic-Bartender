@@ -53,19 +53,19 @@ def sawyer_callback(request):
     #Create a path constraint for the arm
     #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
     #TODO: add conditional taken from srv msg
-    # orien_const = OrientationConstraint()
-    # orien_const.link_name = "right_gripper_tip";
-    # orien_const.header.frame_id = "base";
-    # orien_const.orientation
-    # orien_const.orientation.x = 0.0
-    # orien_const.orientation.y = -1.0
-    # orien_const.orientation.z = 0.0
-    # orien_const.orientation.w = 0.0
+    orien_const = OrientationConstraint()
+    orien_const.link_name = "right_gripper_tip";
+    orien_const.header.frame_id = "base";
+    orien_const.orientation
+    orien_const.orientation.x = 0.0
+    orien_const.orientation.y = -1.0
+    orien_const.orientation.z = 0.0
+    orien_const.orientation.w = 0.0
 
-    # orien_const.absolute_x_axis_tolerance = 0.2;
-    # orien_const.absolute_y_axis_tolerance = 0.2;
-    # orien_const.absolute_z_axis_tolerance = 3.14;
-    # orien_const.weight = 1.0;
+    orien_const.absolute_x_axis_tolerance = 0.2;
+    orien_const.absolute_y_axis_tolerance = 0.2;
+    orien_const.absolute_z_axis_tolerance = 3.14;
+    orien_const.weight = 1.0;
 
     # pos_const = PositionConstraint()
     # pos_const.link_name = "right_gripper_tip";
@@ -83,6 +83,7 @@ def sawyer_callback(request):
     
     if (request.orient):
         main(list_obj, end_goal, orien_const)
+        
     else:
         main(list_obj, end_goal, None)
 

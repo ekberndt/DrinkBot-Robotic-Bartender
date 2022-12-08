@@ -58,7 +58,8 @@ tmux split-window -v -t 0
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send "rosrun planning sawyer_test_client.py"
+tmux send "./intera.sh $robot.local" Enter
+tmux send "roslaunch intera_examples sawyer_tuck.launch"
 
 tmux split-window -h -t 0
 tmux send "source ~/.bashrc" Enter
