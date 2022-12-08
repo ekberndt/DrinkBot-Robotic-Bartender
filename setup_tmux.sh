@@ -46,7 +46,7 @@ tmux split-window -v
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send "rosrun planning ar_tag_client.py" Enter
+tmux send "rosrun planning ar_tag_client.py"
 
 tmux split-window -v -t 3
 tmux send "source ~/.bashrc" Enter
@@ -65,6 +65,6 @@ tmux split-window -h -t 0
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send "rostopic echo user_messages"
+tmux send "rostopic echo user_messages" Enter
 
 tmux a -t ros_view

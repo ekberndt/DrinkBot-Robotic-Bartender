@@ -9,7 +9,7 @@ from std_msgs.msg import Float32
 from planning.srv import grip  # Service type
 from intera_interface import gripper as robot_gripper
 import ar_tag_controller
-import joint_position_angles2
+import joint_position_angles
 from path_planner import PathPlanner
 toggle = 0
 
@@ -262,11 +262,11 @@ def sawyer_client():
                 goal = pos4
                 print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-            elif i == 5:
-                print("5")
-                orient_tf = True
-                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            # elif i == 5:
+            #     print("5")
+            #     orient_tf = True
+            #     print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            #     sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 
             elif i == 6:    
                 print("6")
