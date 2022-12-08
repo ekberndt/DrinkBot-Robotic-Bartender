@@ -81,6 +81,13 @@ class PathPlanner(object):
         print("Current Robot State: ", self._robot.get_current_state())
         return self._group.get_current_pose().pose
 
+    def get_state(self):
+        """
+        Code to get current state.
+        """
+        print("Current Robot State: ", self._robot.get_current_state())
+        return self._robot.get_current_state()
+
     def shutdown(self):
         """
         Code to run on shutdown. This is good practice for safety

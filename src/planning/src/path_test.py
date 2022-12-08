@@ -16,6 +16,8 @@ from geometry_msgs.msg import Pose
 from path_planner import PathPlanner
 from planning.srv import enviro  # Service type
 
+import joint_position_angles
+
 try:
     from controller import Controller
 except ImportError:
@@ -213,6 +215,22 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             if not controller.execute_plan(plan[1]):
                 raise Exception("Execution failed")
             planner.get_group().set_start_state_to_current_state()
+
+            # Do FK
+            if (orien_const):
+                curr_state = planner.get_current_joint_values()
+                print(curr_state)
+                seven_angles = {
+                    joints[0]: one,
+                    joints[1]: two,
+                    joints[2]: three,
+                    joints[3]: four,
+                    joints[4]: five,
+                    joints[5]: six,
+                    joints[6]: seven,
+                }
+                joint_position_angles.set_joint_angles(seven_angles)
+
             break
         except Exception as e:
             print(e)
