@@ -2,6 +2,7 @@
 import numpy as np
 import rospy
 from planning.srv import enviro  # Service type
+from std_srvs.srv import Empty # Empty service type
 from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Float32
@@ -9,7 +10,7 @@ from std_msgs.msg import Float32
 from planning.srv import grip  # Service type
 from intera_interface import gripper as robot_gripper
 import ar_tag_controller
-import joint_position_angles2
+import forward_kinematics_server
 from path_planner import PathPlanner
 toggle = 0
 
@@ -99,18 +100,21 @@ def grip_client(toggle_open_close):
     #         msg = toggle_open_close
     #         grip_proxy(msg)
     
-
-        right_gripper = robot_gripper.Gripper('right_gripper')
+        global right_gripper
+        # right_gripper = robot_gripper.Gripper('right_gripper')
 
         
 
         # if (request.grip):
         if(toggle_open_close):
             # Close the right gripper
+            print('Calibrating...')
+            right_gripper.calibrate()
+            rospy.sleep(2.0)
             print('Closing...')
             right_gripper.close()
             print('I should have closed')
-            rospy.sleep(1.0)
+            rospy.sleep(2.0)
             print('I made to after sleep')
         else:
             # Open the right gripper
@@ -126,13 +130,16 @@ def sawyer_client():
     # Initialize the client node
     rospy.init_node('ar_tag_client')
     # Wait until sawyer_params/enviro topic
-    print("Wait")
+    print("Waiting for Sawyer Server")
     rospy.wait_for_service('/sawyer_parms/enviro')
     print("Started client")
     try:
-        # Acquire service proxy
+        # Acquire service proxy for Sawyer Server
         sawyer_proxy = rospy.ServiceProxy(
             '/sawyer_parms/enviro', enviro)
+
+        forward_kinematic_proxy = rospy.ServiceProxy(
+            '/forward_kinematics_positions', Empty)
 
         #Test Case 1 Obstacle
         obj_posx = np.array([2])
@@ -164,7 +171,7 @@ def sawyer_client():
         offset = PoseStamped()
         offset.header.frame_id = "base"
         offset.pose.position.x = -1.5 * 0.0266
-        offset.pose.position.y = -1 * 0.0266
+        offset.pose.position.y = -2 * 0.0266
         offset.pose.position.z = 5.5 * 0.0266
         offset.pose.orientation.x = 0.0
         offset.pose.orientation.y = 0.0
@@ -205,17 +212,17 @@ def sawyer_client():
         pos2.pose.orientation.z = pos1.pose.orientation.z
         pos2.pose.orientation.w = pos1.pose.orientation.w
 
-        ar_marker_11_base_added_z = PoseStamped()
-        ar_marker_11_base_added_z.header.frame_id = "base"
-        ar_marker_11_base_added_z.pose.position.x = ar_marker_11_base.pose.position.x
-        ar_marker_11_base_added_z.pose.position.y = ar_marker_11_base.pose.position.y + 3 * 0.0266
-        ar_marker_11_base_added_z.pose.position.z = ar_marker_11_base.pose.position.z + 13 * 0.0266
-        ar_marker_11_base_added_z.pose.orientation.x = ar_marker_11_base.pose.orientation.x
-        ar_marker_11_base_added_z.pose.orientation.y = ar_marker_11_base.pose.orientation.y
-        ar_marker_11_base_added_z.pose.orientation.z = ar_marker_11_base.pose.orientation.z
-        ar_marker_11_base_added_z.pose.orientation.w = ar_marker_11_base.pose.orientation.w
+        ar_marker_11_base_added_xz = PoseStamped()
+        ar_marker_11_base_added_xz.header.frame_id = "base"
+        ar_marker_11_base_added_xz.pose.position.x = ar_marker_11_base.pose.position.x + 5 * 0.0266
+        ar_marker_11_base_added_xz.pose.position.y = ar_marker_11_base.pose.position.y + 3 * 0.0266
+        ar_marker_11_base_added_xz.pose.position.z = ar_marker_11_base.pose.position.z + 13 * 0.0266
+        ar_marker_11_base_added_xz.pose.orientation.x = ar_marker_11_base.pose.orientation.x
+        ar_marker_11_base_added_xz.pose.orientation.y = ar_marker_11_base.pose.orientation.y
+        ar_marker_11_base_added_xz.pose.orientation.z = ar_marker_11_base.pose.orientation.z
+        ar_marker_11_base_added_xz.pose.orientation.w = ar_marker_11_base.pose.orientation.w
 
-        pos4 = ar_marker_11_base_added_z
+        pos4 = ar_marker_11_base_added_xz
 
         rospy.loginfo('Sending ar tag positions')
         # Call patrol service via the proxy
@@ -223,6 +230,7 @@ def sawyer_client():
         i = 0
 
         # Calibrate gripper
+        global right_gripper
         right_gripper = robot_gripper.Gripper('right_gripper')
         print('Calibrating...')
         right_gripper.calibrate()
@@ -263,25 +271,26 @@ def sawyer_client():
                 print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
             elif i == 5:
-                print("5")
-                orient_tf = True
-                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                # print("5")
+                # forward_kinematics_server.set_joints_to_pour()
+                forward_kinematic_proxy()
+                print("Forward Proxy Completed")
+                # orient_tf = True
+                # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 
             elif i == 6:    
                 print("6")
                 # orient_tf = True
                 # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                grip_client(False)
+                # grip_client(False)
                 # planner = PathPlanner("right_arm")
                 # curr_state = planner.get_state()
                 # print(curr_state)
-                # # joint_position_angles.
+                # # forward_kinematics_server.
             toggle += 1
             i += 1
-
-
 
     except rospy.ServiceException as e:
         rospy.loginfo("Service call failed: %s"%e)
@@ -391,7 +400,7 @@ def sawyer_client():
 #             pass
         
         # Use our rate object to sleep until it is time to publish again
-        r.sleep()
+        # r.sleep()
 
 
 if __name__ == '__main__':

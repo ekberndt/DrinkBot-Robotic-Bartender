@@ -42,6 +42,7 @@ def controller(turtlebot_frame, goal_frame):
       # print(turtlebot_frame)
       # print(goal_frame)
       trans = tfBuffer.lookup_transform(turtlebot_frame, goal_frame, rospy.Time())
+      print("Trans: \n\n\n\n\n\n\n\n\n\n", trans)
       found_cup = True
       # Process trans to get your state error
       # Generate a control command to send to the robot

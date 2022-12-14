@@ -14,7 +14,6 @@ from std_msgs.msg import Float32
 # message on its subscribed topic. The received message is passed as the first
 # argument to callback().
 def callback(message):
-
     # Print the contents of the message to the console
     print("Mass message received. mass: ")
     print(message.data)

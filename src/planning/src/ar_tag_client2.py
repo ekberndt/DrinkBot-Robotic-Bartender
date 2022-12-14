@@ -163,9 +163,9 @@ def sawyer_client():
         # 1 inch = 0.0266 robot units
         offset = PoseStamped()
         offset.header.frame_id = "base"
-        offset.pose.position.x = -1.5 * 0.0266
-        offset.pose.position.y = -1 * 0.0266
-        offset.pose.position.z = 5.5 * 0.0266
+        offset.pose.position.x = -0.5 * 0.0266
+        offset.pose.position.y = 0.5 * 0.0266
+        offset.pose.position.z = 5.0 * 0.0266
         offset.pose.orientation.x = 0.0
         offset.pose.orientation.y = 0.0
         offset.pose.orientation.z = 0.0

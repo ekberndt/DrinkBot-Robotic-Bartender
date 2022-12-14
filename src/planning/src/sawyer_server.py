@@ -2,10 +2,9 @@
 from geometry_msgs.msg import Twist
 import numpy as np
 import rospy
-from std_srvs.srv import Empty
+from std_srvs.srv import Empty # Service type
 import sys
-from planning.srv import enviro  # Service type
-# from turtlesim.srv import TeleportAbsolute
+from planning.srv import enviro # Service type
 from path_test import main #Link to Arm Movement
 from moveit_msgs.msg import OrientationConstraint, PositionConstraint
 from geometry_msgs.msg import PoseStamped

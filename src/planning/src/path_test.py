@@ -16,7 +16,7 @@ from geometry_msgs.msg import Pose
 from path_planner import PathPlanner
 from planning.srv import enviro  # Service type
 
-from joint_position_angles import map_keyboard
+from forward_kinematics_server import map_keyboard
 # from set_angles import set_joint_angles
 
 try:
@@ -35,14 +35,14 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     
 
 
-    Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
-    Kp = 0 * Kp
-    Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-    Kd = 0* Kd
-    # Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-    Ki = 0 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    Kp = 2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
+    # Kp = 0 * Kp
+    Kd = 0 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
+    # Kd = 0* Kd
+    Ki = 1.5 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    # Ki = 0 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
     Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-    Kw = 0 * Kw
+    # Kw = 0 * Kw
     L = Limb("right")
     controller = Controller(Kp, Ki, Kd, Kw, L)
 
@@ -236,8 +236,8 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
                     'joints6': 2.1,
                 }
                 thing = map_keyboard('right')
-
-                thing.set_joint_angles(seven_angles)
+                
+                set_joint_angles(seven_angles)
 
             break
         except Exception as e:
