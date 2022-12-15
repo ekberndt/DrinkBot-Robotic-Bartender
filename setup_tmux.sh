@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dir="~/DrinkBot-Robotic-Bartender"
-robot="ada"
+robot="alan"
 tmux new -d -s ros_view
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
@@ -30,14 +30,14 @@ tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 tmux send "./intera.sh $robot.local" Enter
-tmux send "rosrun planning sawyer_server.py" Enter
+tmux send "roslaunch intera_examples sawyer_tuck.launch"
 
 tmux split-window -v -t 3
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 tmux send "./intera.sh $robot.local" Enter
-tmux send "rosrun intera_interface joint_trajectory_action_server.py" Enter
+tmux send "" Enter
 
 tmux split-window -v -t 2
 tmux send "source ~/.bashrc" Enter
@@ -56,7 +56,7 @@ tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 tmux send "./intera.sh $robot.local" Enter
-tmux send "roslaunch intera_examples sawyer_tuck.launch"
+tmux send "rosrun planning forward_kinematics_server.py" Enter
 
 tmux split-window -h -t 7
 tmux send "source ~/.bashrc" Enter
@@ -68,19 +68,19 @@ tmux split-window -h -t 6
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send ""
+tmux send "rosrun rviz rviz" Enter
 
 tmux split-window -h -t 5
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send "rosrun planning forward_kinematics_server.py"
+tmux send "rosrun planning sawyer_server.py" Enter
 
 tmux split-window -h -t 4
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
-tmux send "rostopic echo user_messages" Enter
+tmux send "rosrun intera_interface joint_trajectory_action_server.py" Enter
 
 # Evenly split all panes
 tmux select-layout tiled

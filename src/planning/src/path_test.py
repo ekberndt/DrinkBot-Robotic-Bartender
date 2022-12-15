@@ -37,12 +37,11 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
 
     Kp = 2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
     # Kp = 0 * Kp
-    Kd = 0 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
+    Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
     # Kd = 0* Kd
-    Ki = 1.5 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
     # Ki = 0 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
     Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-    # Kw = 0 * Kw
     L = Limb("right")
     controller = Controller(Kp, Ki, Kd, Kw, L)
 
@@ -189,13 +188,16 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             
             #Code block to cycle through plans on rviz
             if (not orien_const):
+                print("Number of joint trajectory points:")
                 while(repeat):
                     i = 0
                     n = 50
                     plan = planner.plan_to_pose(goal_1, put_orient_const)
                     while i < n:
                         new_plan = planner.plan_to_pose(goal_1, put_orient_const)
-                        print("size of jt  points: %d"%len(new_plan[1].joint_trajectory.points))
+                        num_joint_trajectory_points = len(new_plan[1].joint_trajectory.points)
+                        print(num_joint_trajectory_points)
+                        # print("%d"%len(new_plan[1].joint_trajectory.points))
                         if(len(new_plan[1].joint_trajectory.points) == 0):
                             pass
                         elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):

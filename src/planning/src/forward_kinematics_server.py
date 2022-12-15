@@ -208,7 +208,7 @@ def set_joints_to_pour():
     print("Getting joint states")
     joint_states = get_joint_states().copy()
     print("3")
-    joint_states["right_j5"] = -0.25
+    joint_states["right_j5"] = -1.5
     # joint_states["right_j1"] = -0.035
     print("In set pour", joint_states)
 
