@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Ros devel folder
+# ROS computer specific folders and files
 devel/
+.catkin_workspace
