@@ -1,0 +1,4 @@
+# Request message types
+bool jitter
+float32 offset
+---

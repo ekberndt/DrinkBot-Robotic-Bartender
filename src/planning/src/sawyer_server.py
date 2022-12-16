@@ -5,6 +5,7 @@ import rospy
 from std_srvs.srv import Empty # Service type
 import sys
 from planning.srv import enviro # Service type
+from planning.srv import forward_kinematics # Service type
 from path_test import main #Link to Arm Movement
 from moveit_msgs.msg import OrientationConstraint, PositionConstraint
 from geometry_msgs.msg import PoseStamped
@@ -17,7 +18,7 @@ def sawyer_callback(request):
     list_obj = []
     end_goal = request.goal
     print(request)
-
+-
     #Fills rviz with as many objects as inputted
     for i in range(len(request.name_obj)):
         size = np.array([request.sizex[i], request.sizey[i], request.sizez[i]])

@@ -29,6 +29,7 @@ import time
 
 from robot_pos_sub import get_joint_states
 from std_srvs.srv import Empty, SetBool
+from planning.srv import forward_kinematics # Service type
 
 # Seven joint angles to sent the robot to with FK
 # global seven_angles
@@ -201,15 +202,15 @@ def map_keyboard(side):
 #     map_keyboard(args.limb)
 #     print("Done.")
 
-def set_joints_to_pour(jitter):
+def set_joints_to_pour(request):
     # print("Initializing node... ")
     # rospy.init_node("fk_joint_position")
     global seven_angles
     print("Getting joint states")
     joint_states = get_joint_states().copy()
     print("3")
-    if (not jitter):
-        joint_states["right_j5"] = -0.8
+    if (not request.jitter):
+        joint_states["right_j5"] = -0.5
         # joint_states["right_j1"] = -0.035
         print("In set pour", joint_states)
 
@@ -251,7 +252,7 @@ def set_joints_to_pour(jitter):
         print("Seven Angles: ", seven_angles)
         fk = map_keyboard('right')
     else:
-        joint_states["right_j5"] = -1.5
+        joint_states["right_j5"] = -0.7 - request.offset * 0.1
         # joint_states["right_j1"] = -0.035
         print("In set pour", joint_states)
         print("4")
@@ -259,18 +260,13 @@ def set_joints_to_pour(jitter):
         print("Seven Angles: ", seven_angles)
         fk = map_keyboard('right')
 
-        joint_states["right_j5"] = -0.8
+        joint_states["right_j5"] = -0.5
         # joint_states["right_j1"] = -0.035
         print("In set pour", joint_states)
         print("4")
         seven_angles = joint_states
         print("Seven Angles: ", seven_angles)
         fk = map_keyboard('right')
-
-
-
-
-
 
         # fk.set_joint_angles(joint_states)
 
@@ -315,8 +311,7 @@ def forward_kinematics_callback(request):
     #     # plan = planner.plan_to_pose(pos, [])
 
     #     list_obj.append((size, name, pos))
-    jitter = request.data
-    set_joints_to_pour(jitter)
+    set_joints_to_pour(request)
     print("Finished forward kinematics")
 
     return []
@@ -329,7 +324,7 @@ def forward_kinematics_server():
     # Register service
     s = rospy.Service(
         "/forward_kinematics_positions",  # Service name
-        SetBool,  # Service type
+        forward_kinematics,  # Service type
         forward_kinematics_callback  # Service callback
     )
     rospy.loginfo('Running forward kinematics server...')

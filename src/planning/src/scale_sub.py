@@ -9,9 +9,10 @@ import rospy
 # from planning.msg import scale_msg
 from std_msgs.msg import Float32
 # from rosserial_arduino.msg import Adc
+import time
 
 global curr_weight
-curr_weight = 0
+# curr_weight = 0
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
@@ -33,6 +34,7 @@ def listener():
     # with the received message as its first argument.
     global curr_weight
     rospy.Subscriber("/arduino/scalePour", Float32, callback)
+    time.sleep(1)
     # callback(scale_msg)
     print("Ran Arduino subscriber")
     return curr_weight
