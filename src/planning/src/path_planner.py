@@ -78,7 +78,7 @@ class PathPlanner(object):
         """
         Code to get current pose.
         """
-        print("Current Robot State: ", self._robot.get_current_state())
+        print("Current Robot Pose: ", self._robot.get_current_pose().pose)
         return self._group.get_current_pose().pose
 
     def get_state(self):
