@@ -25,16 +25,12 @@ except ImportError:
     pass
     
 def main(obj_arr = [], end_goal = None, orien_const = None):
-    """
-    Main Script
-    """
 
-    # Make sure that you've looked at and understand path_planner.py before starting
-
+    #Declares PathPlanner Object to use its respective functions
     planner = PathPlanner("right_arm")
     
 
-
+    #Controller Parameters
     Kp = 2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
     # Kp = 0 * Kp
     Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
@@ -45,12 +41,7 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     L = Limb("right")
     controller = Controller(Kp, Ki, Kd, Kw, L)
 
-
-    # # 
-    # # Add the obstacle to the planning scene here
-    # #
-
-    #TABLE OBSTACLE
+    #Add table as obstacle to rviz
     size = np.array([0.40, 1.20, 0.10])
     name = "basic_box"
     pos = PoseStamped()
@@ -66,8 +57,8 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     # for obstacle in obj_arr:
     #     planner.add_box_obstacle(obstacle[0], obstacle[1], obstacle[2])
 
-    #Create a path constraint for the arm
-    #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
+    #-----------------Testing Block-----------------------------------------
+    #Create an orientation constraint for the arm
     # if orien_const is not None:
     #     orien_const = OrientationConstraint()
     #     orien_const.link_name = "right_gripper_tip";
@@ -86,70 +77,13 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     # orien_const.absolute_y_axis_tolerance = 0.1;
     # orien_const.absolute_z_axis_tolerance = 0.1;
     # orien_const.weight = 1.0;
-
-    #Waypoints Planning
-    # print("Planning waypoints")
-    # waypoints = []
-
-    # # start with the current pose
-    # start = planner.get_current_poses()
-    # waypoints.append(start)
-
-    # #Difference between start and end goal
-    # dx = start.pose.position.x - end_goal.pose.position.x
-    # dy = start.pose.position.y - end_goal.pose.position.y
-    # dz = start.pose.position.z - end_goal.pose.position.z
-
-    # #Iterate n number of waypoint positions between start and end
-    # n = 10
-    # i = 0
-
-    # while i < n:
-
-    #     i++
-
-    # first orient gripper and move forward (+x)
-    # wpose = geometry_msgs.msg.Pose()
-    # wpose.orientation.w = 1.0
-    # wpose.position.x = waypoints[0].position.x + 0.1
-    # wpose.position.y = waypoints[0].position.y
-    # wpose.position.z = waypoints[0].position.z
-    # waypoints.append(copy.deepcopy(wpose))
-
-    # # second move down
-    # wpose.position.z -= 0.10
-    # waypoints.append(copy.deepcopy(wpose))
-
-    # # third move to the side
-    # wpose.position.y += 0.05
-    # waypoints.append(copy.deepcopy(wpose))
-
-
-    # orien_const = OrientationConstraint()
-    # orien_const.link_name = "right_gripper_tip";
-    # orien_const.header.frame_id = "base";
-    # orien_const.orientation.x = 1.0;
-    # orien_const.orientation.y = 0.0;
-    # orien_const.orientation.z = 0.0;
-    # orien_const.absolute_x_axis_tolerance = 0.2;
-    # orien_const.absolute_y_axis_tolerance = 0.2;
-    # orien_const.absolute_z_axis_tolerance = 0.2;
-    # orien_const.weight = 1.0;
-
-    # orien_const_2 = PositionConstraint()
-    # orien_const_2.link_name = "right_gripper_tip";
-    # orien_const_2.header.frame_id = "base";
-    # orien_const_2.target_point_offset.x = 0.6;
-    # orien_const_2.target_point_offset.y = -0.3;
-    # orien_const_2.target_point_offset.z = 0.0;
-    # orien_const_2.weight = 1.0;
-
-
+    #---------------------------------------------------------------------
 
     print("Got to pose move loop in path_test")
 
     while not rospy.is_shutdown():
         try:
+            #----------------Testing Block----------------
             # x, y, z = 0.8, 0.05, 0.07
             # goal_1 = PoseStamped()
             # goal_1.header.frame_id = "base"
@@ -164,11 +98,10 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             # goal_1.pose.orientation.y = -1.0
             # goal_1.pose.orientation.z = 0.0
             # goal_1.pose.orientation.w = 0.0
+            #----------------------------------------------
 
             goal_1 = end_goal
 
-            # Might have to edit this . . . 
-            # plan = planner.plan_to_pose(goal_1, [orien_const])
             print('moving to x: ' + str(goal_1.pose.position.x))
             print('moving to y: ' + str(goal_1.pose.position.y))
             print('moving to z: ' + str(goal_1.pose.position.z))
@@ -176,20 +109,12 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             put_orient_const = []
             repeat = True
 
-            #Code block to choose most efficient path out of n paths cycled through
-            # i = 0
-            # n = 100
-            # plan = planner.plan_to_pose(goal_1, put_orient_const)
-            # while i < n:
-            #     new_plan = planner.plan_to_pose(goal_1, put_orient_const)
-            #     if (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
-            #         plan = new_plan
-            #     i = i + 1
-            
             #Code block to cycle through plans on rviz
             if (not orien_const):
                 print("Number of joint trajectory points:")
                 while(repeat):
+                    #This code block cycles through n number of plans to choose the most efficient one
+                    #This happens to maintain orientation most of the time
                     i = 0
                     n = 50
                     plan = planner.plan_to_pose(goal_1, put_orient_const)
@@ -203,14 +128,15 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
                         elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
                             plan = new_plan
                         i = i + 1
+                    #--------------Testing Block------------------------
                     # print(plan)
                     # answer = input("y if go, n if no, abort if pro\n")
                     # print("your answer: %s"%answer)
                     # if "abort" in answer:
                     #     return "mission abort"
                     # repeat = "y"  not in answer
+                    #--------------------------------------------------
                     repeat = False
-                    # print(repeat)
                 # input("Press <Enter> to move the right arm to goal pose 1: ")
                 print("OG PLAN", plan, '\n\n\n')
                 # print(plan[1])
@@ -247,7 +173,7 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             traceback.print_exc()
             break
 
-
+    #-----------------------------Testing Block--------------------------------
     # while not rospy.is_shutdown():
     #     try:
     #         goal_3 = PoseStamped()
@@ -343,6 +269,7 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     #         traceback.print_exc()
     #     else:
     #         break
+    #--------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     rospy.init_node('moveit_node')

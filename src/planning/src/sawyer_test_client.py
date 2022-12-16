@@ -14,18 +14,13 @@ global message_to_return
 def sawyer_client(ar_tag):
     global toggle
     # Initialize the client node
-    # rospy.init_node('sawyer_client')
-    # Wait until patrol service is ready
-    # rospy.wait_for_service('/turtle1/patrol')
     rospy.wait_for_service('/sawyer_parms/enviro')
     try:
         # Acquire service proxy
         sawyer_proxy = rospy.ServiceProxy(
             '/sawyer_parms/enviro', enviro)
-        # vel = 2.0  # Linear velocity
-        # omega = 1.0  # Angular velocity
 
-        #Test Case 1
+        #Test Case 1 - Creates a random object
         obj_posx = np.array([2])
         obj_posy = np.array([2])
         obj_posz = np.array([2])
@@ -38,21 +33,9 @@ def sawyer_client(ar_tag):
         sizez = np.array([0.5])
         name_obj = np.array(["Brick"])
 
-        # goal = PoseStamped()
-        # goal.pose.position.x = 0.502
-        # goal.pose.position.y = -0.394
-        # goal.pose.position.z = -0.133
 
-        #Orientation as a quaternion
-        # goal.pose.orientation.x = 0.0
-        # goal.pose.orientation.y = -1.0
-        # goal.pose.orientation.z = 0.0
-        # goal.pose.orientation.w = 0.0
-
+        # CREATED A SET OF POSITIONS TO CYCLE THROUGH WHEN TESTING SAWYER_SERVER.PY---------------------------
         
-
-        #pos1
-
         # pos1 = PoseStamped()
         pos1 = ar_tag
 
@@ -167,7 +150,7 @@ def sawyer_client(ar_tag):
         pos4.pose.orientation.z = 1.0
         pos4.pose.orientation.w = 0.0
         
-
+        #--------------------------------------------------------------------------------------
 
         rospy.loginfo('Moving Arm')
         # Call patrol service via the proxy

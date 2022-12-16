@@ -1,7 +1,7 @@
 #!/bin/sh
 
 dir="~/DrinkBot-Robotic-Bartender"
-robot="alan"
+robot="ada"
 tmux new -d -s ros_view
 tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
@@ -37,7 +37,7 @@ tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 tmux send "./intera.sh $robot.local" Enter
-tmux send "" Enter
+tmux send "rosrun rosserial_python serial_node.py /dev/ttyACM0" Enter
 
 tmux split-window -v -t 2
 tmux send "source ~/.bashrc" Enter
@@ -81,6 +81,12 @@ tmux send "source ~/.bashrc" Enter
 tmux send "cd $dir" Enter
 tmux send "source devel/setup.bash" Enter
 tmux send "rosrun intera_interface joint_trajectory_action_server.py" Enter
+
+# tmux split-window -h -t 3
+# tmux send "source ~/.bashrc" Enter
+# tmux send "cd $dir" Enter
+# tmux send "source devel/setup.bash" Enter
+# tmux send "" Enter
 
 # Evenly split all panes
 tmux select-layout tiled

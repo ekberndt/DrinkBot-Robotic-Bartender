@@ -2,7 +2,7 @@
 import numpy as np
 import rospy
 from planning.srv import enviro  # Service type
-from std_srvs.srv import Empty # Empty service type
+from std_srvs.srv import Empty, SetBool # Empty service type
 from path_test import main #Link to Arm Movement
 from geometry_msgs.msg import PoseStamped
 from std_msgs.msg import Float32
@@ -12,6 +12,7 @@ from intera_interface import gripper as robot_gripper
 import ar_tag_controller
 import forward_kinematics_server
 from path_planner import PathPlanner
+import scale_sub_temp
 import time
 import os
 
@@ -139,7 +140,7 @@ def sawyer_client():
             '/sawyer_parms/enviro', enviro)
 
         forward_kinematic_proxy = rospy.ServiceProxy(
-            '/forward_kinematics_positions', Empty)
+            '/forward_kinematics_positions', SetBool)
 
         #Test Case 1 Obstacle
         obj_posx = np.array([2])
@@ -170,8 +171,8 @@ def sawyer_client():
         # 1 inch = 0.0266 robot units
         offset = PoseStamped()
         offset.header.frame_id = "base"
-        offset.pose.position.x = 1.1 * 0.0266
-        offset.pose.position.y = -2 * 0.0266
+        offset.pose.position.x = 2 * 0.0266
+        offset.pose.position.y = 0.7 * 0.0266
         offset.pose.position.z = -5.5 * 0.0266
         offset.pose.orientation.x = 0.0
         offset.pose.orientation.y = 0.0
@@ -179,10 +180,12 @@ def sawyer_client():
         offset.pose.orientation.w = 0.0
 
         ar_marker_base = ar_tag_controller.controller("camera_link", "ar_marker_15") # Base ar_tag
-        ar_marker_11 = ar_tag_controller.controller("camera_link", "ar_marker_11") # Blue cup
+        # ar_marker_11 = ar_tag_controller.controller("camera_link", "ar_marker_11") # Blue cup
         ar_marker_14 = ar_tag_controller.controller("camera_link", "ar_marker_14") # Green cup
-        ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
+        ar_marker_17 = ar_tag_controller.controller("camera_link", "ar_marker_17") # Product cup
+        # ar_marker_11_base = camera_to_base_frame(ar_marker_base, ar_marker_11, offset)
         ar_marker_14_base = camera_to_base_frame(ar_marker_base, ar_marker_14, offset)
+        ar_marker_17_base = camera_to_base_frame(ar_marker_base, ar_marker_17, offset)
 
         # Create an instance of the rospy.Publisher object which we can  use to
         # publish messages to a topic. This publisher publishes messages of type
@@ -214,6 +217,7 @@ def sawyer_client():
         pos2.pose.orientation.z = pos1.pose.orientation.z
         pos2.pose.orientation.w = pos1.pose.orientation.w
 
+        # Position above blue cup
         ar_marker_11_base_added_xz = PoseStamped()
         ar_marker_11_base_added_xz.header.frame_id = "base"
         ar_marker_11_base_added_xz.pose.position.x = ar_marker_11_base.pose.position.x + -11 * 0.0266
@@ -223,13 +227,27 @@ def sawyer_client():
         ar_marker_11_base_added_xz.pose.orientation.y = ar_marker_11_base.pose.orientation.y
         ar_marker_11_base_added_xz.pose.orientation.z = ar_marker_11_base.pose.orientation.z
         ar_marker_11_base_added_xz.pose.orientation.w = ar_marker_11_base.pose.orientation.w
+        pos6 = ar_marker_11_base_added_xz
 
-        # Position above blue cup
-        pos4 = ar_marker_11_base_added_xz
+        # Position above green cup   
+        pos1 = ar_marker_14_base
+
+        ar_marker_17_base_added_xz = PoseStamped()
+        ar_marker_17_base_added_xz.header.frame_id = "base"
+        ar_marker_17_base_added_xz.pose.position.x = ar_marker_17_base.pose.position.x + -8 * 0.0266
+        ar_marker_17_base_added_xz.pose.position.y = ar_marker_17_base.pose.position.y + 0 * 0.0266
+        ar_marker_17_base_added_xz.pose.position.z = ar_marker_17_base.pose.position.z + 10 * 0.0266
+        ar_marker_17_base_added_xz.pose.orientation.x = ar_marker_17_base.pose.orientation.x
+        ar_marker_17_base_added_xz.pose.orientation.y = ar_marker_17_base.pose.orientation.y
+        ar_marker_17_base_added_xz.pose.orientation.z = ar_marker_17_base.pose.orientation.z
+        ar_marker_17_base_added_xz.pose.orientation.w = ar_marker_17_base.pose.orientation.w
+
+        # Position above product cup
+        pos4 = ar_marker_17_base_added_xz
 
         rospy.loginfo('Sending ar tag positions')
         # Call patrol service via the proxy
-        positions = 10
+        positions = 16
         i = 0
 
         # Calibrate gripper
@@ -244,7 +262,6 @@ def sawyer_client():
         print(curr_state)
         # while not rospy.is_shutdown():
         while i < positions:
-            # input("press enter to move")
             if i == 0:
                 print("Moving to Sawyer Tuck position")
                 os.system("roslaunch planning sawyer_tuck.launch")
@@ -262,50 +279,95 @@ def sawyer_client():
                 # Gripper must be opened before it can be closed
                 grip_client(False)
                 grip_client(True)
-            #     goal = pos3
-            #     orient_tf = False
             elif i == 3:
                 print("3")
                 print("Moving to Sawyer Tuck position")
                 os.system("roslaunch planning sawyer_tuck.launch")
-                # pos1.pose.position.z = pos1.pose.position.z + 10 * 0.0266
-                # goal = pos1
-                # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
             elif i == 4:
-                print("4")
+                print("Moving to above product cup")
                 goal = pos4
                 print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
             elif i == 5:
-                # print("5")
-                # forward_kinematics_server.set_joints_to_pour()
-                forward_kinematic_proxy()
+                forward_kinematic_proxy(False)
                 print("Forward Proxy Completed")
-                # orient_tf = True
-                # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                
+
+                # Jitter cup until desired weight is reached
+                global curr_weight
+                curr_weight = 0
+                curr_weight = scale_sub_temp.listener()
+                mass_lim = 50
+                continue_pour_check = scale_sub_temp.continue_pour(curr_weight, mass_lim)
+                while(continue_pour_check):
+                    print("Continuing to pour with weight: " + str(curr_weight))
+                    curr_weight = scale_sub_temp.listener()
+                    print("Weight in ar_client: " + str(curr_weight))
+                    continue_pour_check = scale_sub_temp.continue_pour(curr_weight, mass_lim)
+                    forward_kinematic_proxy(True)
+                    time.sleep(3)
             elif i == 6:    
                 print("6")
                 goal = pos2
                 orient_tf = False
                 print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
                 sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                # orient_tf = True
-                # print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                # sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
-                # grip_client(False)
-                # planner = PathPlanner("right_arm")
-                # curr_state = planner.get_state()
-                # print(curr_state)
-                # # forward_kinematics_server.
             elif i == 7:
                 print('7')
                 grip_client(False)
                 print("Moving to Sawyer Tuck position")
                 os.system("roslaunch planning sawyer_tuck.launch")
+            elif i == 8
+                goal = pos1
+                orient_tf = False
+                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            elif i== 9:
+                goal = pos2
+                orient_tf = False
+                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            elif i == 10:
+                # Open then close the gripper
+                # Gripper must be opened before it can be closed
+                grip_client(False)
+                grip_client(True)
+            elif i == 11:
+                print("3")
+                print("Moving to Sawyer Tuck position")
+                os.system("roslaunch planning sawyer_tuck.launch")
+            elif i == 12:
+                print("Moving to above product cup")
+                goal = pos4
+                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            elif i == 13:
+                forward_kinematic_proxy(False)
+                print("Forward Proxy Completed")
 
+                # Jitter cup until desired weight is reached
+                global curr_weight
+                curr_weight = 0
+                curr_weight = scale_sub_temp.listener()
+                mass_lim = 50
+                continue_pour_check = scale_sub_temp.continue_pour(curr_weight, mass_lim)
+                while(continue_pour_check):
+                    print("Continuing to pour with weight: " + str(curr_weight))
+                    curr_weight = scale_sub_temp.listener()
+                    print("Weight in ar_client: " + str(curr_weight))
+                    continue_pour_check = scale_sub_temp.continue_pour(curr_weight, mass_lim)
+                    forward_kinematic_proxy(True)
+                    time.sleep(3)
+            elif i == 14:    
+                print("6")
+                goal = pos2
+                orient_tf = False
+                print(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+                sawyer_proxy(obj_posx, obj_posy, obj_posz, obj_orientx, obj_orienty, obj_orientz, obj_orientw, sizex, sizey, sizez, name_obj, orient_tf, goal)
+            elif i == 15:
+                print('7')
+                grip_client(False)
+                print("Moving to Sawyer Tuck position")
+                os.system("roslaunch planning sawyer_tuck.launch")
             i += 1
 
     except rospy.ServiceException as e:
