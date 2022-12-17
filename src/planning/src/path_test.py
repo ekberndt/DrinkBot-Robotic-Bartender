@@ -32,12 +32,13 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
 
     #Controller Parameters
     Kp = 2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
-    # Kp = 0 * Kp
+    
     Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-    # Kd = 0* Kd
+    
     Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-    # Ki = 0 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    
     Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
+    
     L = Limb("right")
     controller = Controller(Kp, Ki, Kd, Kw, L)
 
@@ -54,8 +55,12 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
     pos.pose.orientation.z = 0
     pos.pose.orientation.w = 1
     planner.add_box_obstacle(size, name, pos)
+    
+    # If want to add multiple obstacles from client #
+    #-------------------------#
     # for obstacle in obj_arr:
     #     planner.add_box_obstacle(obstacle[0], obstacle[1], obstacle[2])
+    #-------------------------#
 
     #-----------------Testing Block-----------------------------------------
     #Create an orientation constraint for the arm
@@ -105,68 +110,49 @@ def main(obj_arr = [], end_goal = None, orien_const = None):
             print('moving to x: ' + str(goal_1.pose.position.x))
             print('moving to y: ' + str(goal_1.pose.position.y))
             print('moving to z: ' + str(goal_1.pose.position.z))
+            # USE THIS LINE IF USING ORIENTATION Constraints
+            #-------------------------#
             # put_orient_const = [orien_const] if orien_const is not None else []
+            #-------------------------#
+            
             put_orient_const = []
             repeat = True
 
             #Code block to cycle through plans on rviz
-            if (not orien_const):
-                print("Number of joint trajectory points:")
-                while(repeat):
-                    #This code block cycles through n number of plans to choose the most efficient one
-                    #This happens to maintain orientation most of the time
-                    i = 0
-                    n = 50
-                    plan = planner.plan_to_pose(goal_1, put_orient_const)
-                    while i < n:
-                        new_plan = planner.plan_to_pose(goal_1, put_orient_const)
-                        num_joint_trajectory_points = len(new_plan[1].joint_trajectory.points)
-                        print(num_joint_trajectory_points)
-                        # print("%d"%len(new_plan[1].joint_trajectory.points))
-                        if(len(new_plan[1].joint_trajectory.points) == 0):
-                            pass
-                        elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
-                            plan = new_plan
-                        i = i + 1
-                    #--------------Testing Block------------------------
-                    # print(plan)
-                    # answer = input("y if go, n if no, abort if pro\n")
-                    # print("your answer: %s"%answer)
-                    # if "abort" in answer:
-                    #     return "mission abort"
-                    # repeat = "y"  not in answer
-                    #--------------------------------------------------
-                    repeat = False
-                # input("Press <Enter> to move the right arm to goal pose 1: ")
-                print("OG PLAN", plan, '\n\n\n')
-                # print(plan[1])
-                # if not planner.execute_plan(plan[1]): 
-                # if not planner.execute_plan(plan[1]):
-                #     raise Exception("Execution failed")
-                if not controller.execute_plan(plan[1]):
-                    raise Exception("Execution failed")
-                planner.get_group().set_start_state_to_current_state()
-
-            # Do FK
-            else:
-                # curr_state = planner.get_current_joint_values()
-                # print("curr_state")
-                # print()
-                # print(curr_state)
-                # angles = curr_state.positions
-                seven_angles = {
-                    'joints0': 0.35,
-                    'joints1': -0.72,
-                    'joints2': -0.53,
-                    'joints3': 1.65,
-                    'joints4': 0.14,
-                    'joints5': -1,
-                    'joints6': 2.1,
-                }
-                thing = map_keyboard('right')
-                
-                set_joint_angles(seven_angles)
-
+            
+            print("Number of joint trajectory points:")
+            while(repeat):
+                #This code block cycles through n number of plans to choose the most efficient one
+                #This happens to maintain orientation most of the time
+                i = 0
+                n = 50
+                plan = planner.plan_to_pose(goal_1, put_orient_const)
+                while i < n:
+                    new_plan = planner.plan_to_pose(goal_1, put_orient_const)
+                    num_joint_trajectory_points = len(new_plan[1].joint_trajectory.points)
+                    print(num_joint_trajectory_points)
+                    # print("%d"%len(new_plan[1].joint_trajectory.points))
+                    if(len(new_plan[1].joint_trajectory.points) == 0):
+                        pass
+                    elif (len(new_plan[1].joint_trajectory.points) < len(plan[1].joint_trajectory.points)):
+                        plan = new_plan
+                    i = i + 1
+                #--------------Testing Block------------------------
+                # print(plan)
+                # answer = input("y if go, n if no, abort if pro\n")
+                # print("your answer: %s"%answer)
+                # if "abort" in answer:
+                #     return "mission abort"
+                # repeat = "y"  not in answer
+                #--------------------------------------------------
+                repeat = False
+            
+            print("OG PLAN", plan, '\n\n\n')
+            
+            if not controller.execute_plan(plan[1]):
+                raise Exception("Execution failed")
+            planner.get_group().set_start_state_to_current_state()
+            
             break
         except Exception as e:
             print(e)
