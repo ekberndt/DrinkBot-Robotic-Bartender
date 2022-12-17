@@ -18,8 +18,9 @@ def sawyer_callback(request):
     list_obj = []
     end_goal = request.goal
     print(request)
--
-    #Fills rviz with as many objects as inputted
+    
+    # Fills rviz with as many objects as inputted from 
+    # the client node
     for i in range(len(request.name_obj)):
         size = np.array([request.sizex[i], request.sizey[i], request.sizez[i]])
         name = request.name_obj
@@ -37,9 +38,9 @@ def sawyer_callback(request):
         list_obj.append((size, name, pos))
 
 
-    #UNCOMMENT FOR THE ORIENTATION CONSTRAINTS PART
-    #TODO: add conditional taken from srv msg
-    #ASK ERIC IF THIS IS STILL NEEDED TO TIP
+   
+    # Orientation Block #
+    #--------------------------#
     orien_const = OrientationConstraint()
     orien_const.link_name = "right_gripper_tip";
     orien_const.header.frame_id = "base";
@@ -53,7 +54,7 @@ def sawyer_callback(request):
     orien_const.absolute_y_axis_tolerance = 0.2;
     orien_const.absolute_z_axis_tolerance = 3.14;
     orien_const.weight = 1.0;
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    #--------------------------#
 
     #If down orientation is needed, constrain it
     if (request.orient):
@@ -62,10 +63,10 @@ def sawyer_callback(request):
         main(list_obj, end_goal, None)
 
 
-    return "Finished executing pose"  # This line will never be reached
+    return "Finished executing pose"  
 
 def sawyer_server():
-    # Initialize the server node for turtle1
+    # Initialize the server node for sawyer control
     rospy.init_node("sawyer_server")
     # Register service
     s = rospy.Service(
@@ -78,8 +79,6 @@ def sawyer_server():
 
 
 if __name__ == '__main__':
-    # name = "turtle1"
-    # if len(sys.argv) == 2:
-    #     name = sys.argv[1]
+    
     sawyer_server()
 
