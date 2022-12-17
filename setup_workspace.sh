@@ -1,3 +1,3 @@
+# Bash script to quickly set up a terminal
 source ~/.bashrc
-# catkin_make
 source devel/setup.bash

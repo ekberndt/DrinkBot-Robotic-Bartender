@@ -12,55 +12,33 @@ from std_msgs.msg import Float32
 import time
 
 global curr_weight
-# curr_weight = 0
 
 # Define the callback method which is called whenever this node receives a 
 # message on its subscribed topic. The received message is passed as the first
 # argument to callback().
 def callback(message):
-    # Print the contents of the message to the console
-    # print("Mass message received. mass: " + str(message.data))
-    # print()
     global curr_weight
     curr_weight = message.data
-    # print("Message: " + message.user_message + ", Sent at: " + str(message.timestamp) + ", Received at: " + str(rospy.get_time()))
 
-# Define the method which contains the node's main functionality
 def listener():
-
     # Create a new instance of the rospy.Subscriber object which we can use to
-    # receive messages of type std_msgs/String from the topic /chatter_talk.
+    # receive messages of type Float32 from the topic /arduino/scalePour.
     # Whenever a new message is received, the method callback() will be called
     # with the received message as its first argument.
     global curr_weight
     rospy.Subscriber("/arduino/scalePour", Float32, callback)
     time.sleep(1)
-    # callback(scale_msg)
     print("Ran Arduino subscriber")
     return curr_weight
 
-
-    # Wait for messages to arrive on the subscribed topics, and exit the node
-    # when it is killed with Ctrl+C
-    # rospy.spin()
-
-
 # Python's syntax for a main() method
 if __name__ == '__main__':
-
-    # Run this program as a new node in the ROS computation graph called
-    # /listener_<id>, where <id> is a randomly generated numeric string. This
-    # randomly generated name means we can start multiple copies of this node
-    # without having multiple nodes with the same name, which ROS doesn't allow.
-    # rospy.init_node('mass_listener', anonymous=True)
-
-    # listener()
     pass
 
-
-#Called whenever the mass begins to change significantly
 def continue_pour(curr_weight, mass_lim):
-    #Makes a Decision based on when to stop pouring based on how much mass is measured on the scale
+    '''
+    Makes a Decision based on when to stop pouring based on how much mass is measured on the scale
+    '''
     if (curr_weight < mass_lim):
         return True
     else:

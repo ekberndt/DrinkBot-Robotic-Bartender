@@ -257,16 +257,7 @@ class Controller(object):
         self._LastError = error
         self._LastTime = t
 
-        ###################### YOUR CODE HERE #########################
-
-        # Note, you should load the Kp, Ki, Kd, and Kw constants with
-        # self._Kp
-        # and so on. This is better practice than hard-coding
-
-        # self._IntError 
         u = u_ff + self._Kp * error + self._Ki * self._IntError * dt + self._Kd * curr_derivative
-
-        ###################### YOUR CODE END ##########################
 
         return u
 

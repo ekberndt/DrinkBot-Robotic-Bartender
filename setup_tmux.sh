@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# Bash script thats launches a tmux session with all necessary ROS nodes running
 dir="~/DrinkBot-Robotic-Bartender"
 robot="ada"
 tmux new -d -s ros_view
