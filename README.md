@@ -3,6 +3,8 @@
 Check out our website for a more in depth description of this Project!
 Link to website: https://tinyurl.com/flowbot-automation
 
+*Note - most commits are pushed on Eric Berndt's account because we all worked on his account at the computer lab to access the Sawyer Robots
+
 Goals of this Project:
 Design a robot control system with the ability to mix two arbitrary ingredients of desired quantity into a product cup.
 
